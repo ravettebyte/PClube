@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100d18">
+  <title>Clube do Episódio</title>
+  <link rel="icon" type="image/png" href="/IMAGENS/logo.png">
+  <script>
+    try {
+      const savedTheme = localStorage.getItem('clube-theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+    } catch {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=profile-summary-icons-2">
+</head>
+<body>
+  <div id="toast" class="toast" role="status"></div>
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-art">
+      <div class="brand"><img class="brand-logo auth-logo" src="/IMAGENS/logo.png" alt=""><span class="brand-name">clube<span class="brand-light">.</span></span></div>
+      <div class="auth-copy">
+        <span class="eyebrow">SEU PRÓXIMO EPISÓDIO COMEÇA AQUI</span>
+        <h1>Doramas que<br><em>juntam pessoas.</em></h1>
+        <p>Uma biblioteca para assistir, conversar e acompanhar cada episódio junto com seu grupo.</p>
+      </div>
+      <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+      <div class="art-card"><span>NA LISTA DO GRUPO</span><strong>Mais um episódio?</strong><div class="art-progress"><i></i></div><small>Uma história compartilhada.</small></div>
+    </div>
+    <div class="auth-panel">
+      <button id="authThemeToggle" class="theme-toggle auth-theme-toggle" type="button" aria-label="Ativar tema claro" title="Ativar tema claro">☼</button>
+      <div class="auth-box">
+        <div class="brand mobile-brand"><img class="brand-logo" src="/IMAGENS/logo.png" alt=""><span class="brand-name">clube<span class="brand-light">.</span></span></div>
+        <div class="auth-tabs"><button class="auth-tab active" data-auth="login">Entrar</button><button class="auth-tab" data-auth="register">Criar conta</button></div>
+        <form id="loginForm" class="auth-form">
+          <h2>Que bom ter você de volta</h2><p>Acesse sua conta para continuar de onde parou.</p>
+          <label>Usuário<input name="username" autocomplete="username" placeholder="Seu nome de usuário" required></label>
+          <label>Senha<input name="password" type="password" autocomplete="current-password" placeholder="Sua senha" required></label>
+          <button class="button primary full" type="submit">Entrar na biblioteca <span>→</span></button>
+        </form>
+        <form id="registerForm" class="auth-form hidden">
+          <h2>Seu lugar no clube</h2><p>Crie seu acesso e acompanhe o que o grupo está assistindo.</p>
+          <label>Nome de exibição<input name="display_name" maxlength="50" placeholder="Como quer aparecer?" required></label>
+          <label>Usuário<input name="username" minlength="3" maxlength="24" autocomplete="username" placeholder="Sem espaços" required></label>
+          <label>Senha<input name="password" type="password" minlength="10" autocomplete="new-password" placeholder="Pelo menos 10 caracteres" required></label>
+          <button class="button primary full" type="submit">Criar minha conta <span>→</span></button>
+        </form>
+        <div class="auth-foot">Suas histórias, seu ritmo. <span>✦</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Clube do Episódio"><img class="brand-logo topbar-logo" src="/IMAGENS/logo.png" alt=""><span class="brand-name">clube<span class="brand-light">.</span></span></a>
+      <nav class="main-nav"><button class="nav-link active" data-view="library"><span class="nav-full">Início</span><span class="nav-compact">Início</span></button><button class="nav-link" data-view="members"><span class="nav-full">Membros</span><span class="nav-compact">Grupo</span></button></nav>
+      <div class="top-actions"><button id="addEpisodeButton" class="button primary add-button">＋ <span></span>Adicionar Conteúdo</button><div class="notification-menu"><button id="notificationButton" class="icon-button notification-button" type="button" aria-label="Notificações" aria-haspopup="dialog" aria-expanded="false" aria-controls="notificationPopover"><span aria-hidden="true">🔔</span><span id="notificationBadge" class="notification-badge hidden">0</span></button><div id="notificationPopover" class="notification-popover hidden" role="dialog" aria-label="Notificações do usuário"><div class="notification-header"><strong>Notificações</strong></div><div id="notificationList" class="notification-list"></div><p id="notificationEmpty" class="notification-empty hidden">Nenhuma notificação por aqui.</p></div></div><div id="profileMenu" class="profile-menu"><button id="profileButton" class="profile-button" aria-label="Ver perfil" aria-haspopup="dialog" aria-expanded="false" aria-controls="profilePopover"><span id="topAvatar" class="avatar">?</span><span id="topName"></span><span class="chevron">⌄</span></button><section id="profilePopover" class="profile-popover hidden" role="dialog" aria-label="Informações do perfil"><div id="popoverIdentity" class="popover-identity"></div><div id="popoverBio" class="popover-bio"></div><button id="editProfileButton" class="popover-edit" type="button"><span aria-hidden="true">↗</span> Acessar perfil</button></section></div><button id="appThemeToggle" class="theme-toggle" type="button" aria-label="Ativar tema claro" title="Ativar tema claro">☼</button><button id="logoutButton" class="icon-button" title="Sair" aria-label="Sair">↗</button></div>
+    </header>
+
+    <main>
+      <section id="libraryView">
+        <section class="hero">
+          <div class="hero-copy"><span class="eyebrow"><i></i> UM CLUBE, MUITAS HISTÓRIAS</span><h1>O que vamos<br><em>assistir juntos?</em></h1><p>Descubra os episódios do grupo, deixe sua marca e acompanhe a jornada de cada pessoa.</p><button id="heroAddButton" class="button hero-button">Adicionar episódio <span>→</span></button></div>
+          <div class="hero-art"><div class="hero-glow"></div><div class="hero-poster poster-back"></div><div class="hero-poster poster-front"><span>PLAY</span><div class="poster-caption">A próxima história<br>é nossa.</div></div><div class="floating-note">✦ <span>seu grupo<br>está aqui</span></div></div>
+        </section>
+
+        <section class="home-drama-section" aria-label="Doramas em destaque">
+          <div class="home-drama-heading"><div><span class="eyebrow">HISTÓRIAS DO CLUBE</span><h2>Escolha o que assistir</h2></div><div class="carousel-controls"><button class="carousel-arrow" type="button" data-carousel-direction="-1" aria-label="Doramas anteriores">←</button><button class="carousel-arrow" type="button" data-carousel-direction="1" aria-label="Próximos doramas">→</button></div></div>
+          <div id="homeDramaCarousel" class="home-drama-carousel"></div>
+          <p id="homeDramaEmpty" class="home-drama-empty hidden">Os doramas adicionados pelo grupo aparecerão aqui.</p>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2"></rect><path d="M9 8h6M9 12h6M9 16h3"></path></svg></span><div><strong id="statEpisodes">0</strong><span>Episódios na biblioteca</span></div></article>
+          <article class="stat-card"><span class="stat-icon purple" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m10 8 6 4-6 4z"></path></svg></span><div><strong id="statWatching">0</strong><span>Em andamento pelo grupo</span></div></article>
+          <article class="stat-card"><span class="stat-icon pink" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path></svg></span><div><strong id="statFinished">0</strong><span>Concluídos pelo grupo</span></div></article>
+          <article class="stat-card"><span class="stat-icon lilac" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19v-1a5.5 5.5 0 0 1 11 0v1zM16 5.5a3 3 0 0 1 0 5.8M17 14a4 4 0 0 1 3.5 4v1h-3"></path></svg></span><div><strong id="statMembers">0</strong><span>Membros no clube</span></div></article>
+        </section>
+
+        <section class="section library-section">
+          <div class="section-heading"><div><span class="eyebrow">FEITO PELO GRUPO</span><h2>Biblioteca</h2><p class="library-hint">Cada dorama tem seu próprio bloco. Adicione episódios com o mesmo nome para reuni-los.</p></div><div class="library-tools"><label class="search-box"><span>⌕</span><input id="searchInput" placeholder="Buscar dorama ou episódio"></label><select id="filterSelect" aria-label="Filtrar episódios"><option value="all">Todos</option><option value="watching">Assistindo</option><option value="done">Concluídos</option><option value="new">Não comecei</option></select></div></div>
+          <div id="episodeGrid" class="episode-grid"></div>
+          <div id="emptyState" class="empty-state hidden"><div>✦</div><h3>A biblioteca começa com você</h3><p>Adicione um episódio para o grupo assistir e acompanhar junto.</p><button class="button primary" id="emptyAddButton">Adicionar primeiro episódio</button></div>
+        </section>
+      </section>
+
+      <section id="membersView" class="members-view hidden">
+        <div class="section-heading members-heading"><div><span class="eyebrow">CADA UM NO SEU RITMO</span><h1>O nosso grupo</h1><p>Acompanhe onde cada pessoa está em cada episódio.</p></div><div class="member-total"><strong id="membersTotal">0</strong><span>pessoas no clube</span></div></div>
+        <section class="recommendations-panel">
+          <div class="recommendations-header"><div><span class="eyebrow">NOTIFICAÇÕES</span><h2>Recomendações</h2></div></div>
+          <div id="recommendationList" class="recommendation-list"></div>
+          <p id="recommendationEmpty" class="recommendation-empty hidden">Nenhuma recomendação chegou até você ainda.</p>
+        </section>
+        <div id="memberGrid" class="member-grid"></div>
+      </section>
+
+      <section id="profileView" class="profile-page hidden">
+        <section class="profile-banner">
+          <div class="profile-banner-glow"></div>
+          <div class="profile-hero-content">
+            <div id="profilePageAvatar" class="profile-page-avatar"></div>
+            <div class="profile-page-identity"><span class="eyebrow">SEU ESPAÇO NO CLUBE</span><h1 id="profilePageName"></h1><span id="profilePageUsername" class="profile-page-username"></span><p id="profilePageBio"></p></div>
+            <button id="profileSettingsButton" class="button profile-settings" type="button"><span aria-hidden="true">⚙</span> Configurações do perfil</button>
+          </div>
+        </section>
+        <div class="profile-page-content">
+          <section class="profile-overview">
+            <article class="profile-overview-card"><span class="profile-overview-icon episode-count-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.75h7l4 4v12.5H7a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z"></path><path d="M14 3.75v4h4M9 12h6M9 15.5h6"></path></svg></span><div><strong id="profileEpisodeCount">0</strong><span>Episódios na biblioteca</span></div></article>
+            <article class="profile-overview-card"><span class="profile-overview-icon watching-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m10 8.5 5.5 3.5-5.5 3.5z" class="icon-play"></path></svg></span><div><strong id="profileWatchingCount">0</strong><span>Assistindo agora</span></div></article>
+            <article class="profile-overview-card"><span class="profile-overview-icon completed-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.25 2.6 2.6L16.5 9"></path></svg></span><div><strong id="profileDoneCount">0</strong><span>Episódios concluídos</span></div></article>
+          </section>
+          <section class="profile-recent-section">
+            <div><span class="eyebrow">CONTINUE DE ONDE PAROU</span><h2>Recentes</h2><p>Os últimos episódios que você abriu, do mais recente ao anterior.</p></div>
+            <div id="profileRecentEpisodes" class="profile-recent-list"></div>
+            <p id="profileRecentEmpty" class="profile-recent-empty hidden">Os episódios que você abrir aparecerão aqui.</p>
+          </section>
+          <section class="profile-favorites-section">
+            <div><span class="eyebrow">SUAS HISTÓRIAS</span><h2>Doramas favoritos</h2><p>Os doramas que você favoritou ficam guardados aqui.</p></div>
+            <div id="profileFavorites" class="profile-favorites-grid"></div>
+            <p id="profileFavoritesEmpty" class="profile-favorites-empty hidden">Você ainda não favoritou nenhum dorama.</p>
+          </section>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><img class="brand-logo footer-logo" src="/IMAGENS/logo.png" alt=""><span>Clube do Episódio</span><span class="footer-note">Feito para assistir junto, mesmo de longe. <i>✦</i></span></footer>
+  </div>
+
+  <div id="dramaModal" class="modal-backdrop hidden">
+    <section class="modal drama-modal" role="dialog" aria-modal="true" aria-labelledby="dramaTitle">
+      <button class="modal-close" data-close="dramaModal" aria-label="Fechar">×</button>
+      <div id="dramaModalContent"></div>
+    </section>
+  </div>
+
+  <div id="recommendModal" class="modal-backdrop hidden">
+    <section class="modal form-modal recommend-modal" role="dialog" aria-modal="true" aria-labelledby="recommendTitle">
+      <button class="modal-close" data-close="recommendModal" aria-label="Fechar">×</button>
+      <span class="eyebrow">RECOMENDAÇÃO</span>
+      <h2 id="recommendTitle">Recomendar dorama</h2>
+      <form id="recommendForm" class="modal-form">
+        <label>Para quem? 
+          <select id="recommendTarget" name="to_user_id" required></select>
+        </label>
+        <label>Dorama
+          <select id="recommendSeries" name="series" required></select>
+        </label>
+        <button class="button primary full" type="submit">Enviar recomendação <span>→</span></button>
+      </form>
+    </section>
+  </div>
+
+  <div id="episodeModal" class="modal-backdrop hidden">
+    <section class="modal episode-modal" role="dialog" aria-modal="true" aria-labelledby="episodeTitle">
+      <button class="modal-close" data-close="episodeModal" aria-label="Fechar">×</button>
+      <div id="watchArea" class="watch-area"></div>
+      <div class="episode-detail">
+        <div class="episode-main">
+          <span id="episodeMeta" class="eyebrow"></span><h2 id="episodeTitle"></h2><p id="episodeDescription" class="episode-description"></p><a id="externalVideoLink" class="external-video-link hidden" href="#" target="_blank" rel="noopener noreferrer">Abrir vídeo no YouTube ↗</a>
+          <div class="progress-control"><label for="progressSelect">Meu progresso</label><select id="progressSelect"><option value="new">Não comecei</option><option value="watching">Assistindo</option><option value="done">Concluído</option></select><input id="progressNote" maxlength="120" placeholder="Onde parei? (ex.: 18 min)" aria-label="Anotação do progresso"><button id="saveProgress" class="button primary compact">Salvar</button></div>
+          <div class="comments-heading"><div><span class="eyebrow">CONVERSA DO CLUBE</span><h3>Comentários <span id="commentCount">0</span></h3></div></div>
+          <form id="commentForm" class="comment-form"><textarea name="text" maxlength="1000" placeholder="O que você achou deste episódio?" required></textarea><div class="comment-actions"><label>Marcar <select name="mentions" id="mentionSelect" multiple aria-label="Marcar membros"></select></label><button class="button primary compact" type="submit">Comentar <span>→</span></button></div><small>Use Ctrl ou ⌘ para marcar mais de uma pessoa.</small></form>
+          <div id="commentList" class="comment-list"></div>
+        </div>
+        <aside class="episode-aside"><div class="aside-label">PROGRESSO DO GRUPO</div><div id="episodeMembers" class="episode-members"></div></aside>
+      </div>
+    </section>
+  </div>
+
+  <div id="addModal" class="modal-backdrop hidden">
+    <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="addTitle"><button class="modal-close" data-close="addModal" aria-label="Fechar">×</button><span class="eyebrow">UMA NOVA HISTÓRIA</span><h2 id="addTitle">Adicionar episódio</h2><p class="modal-intro">Use o mesmo nome do dorama para guardar os episódios juntos no mesmo bloco.</p>
+      <form id="episodeForm" class="modal-form">
+        <label>Nome do dorama<input name="series" maxlength="80" placeholder="Ex.: Uma história incrível" required></label>
+        <div class="form-row"><label>Temporada<input name="season" type="number" min="1" max="999" value="1" required></label><label>Episódio<input name="episode" type="number" min="1" max="9999" value="1" required></label></div>
+        <label>Título do episódio<input name="title" maxlength="120" placeholder="Ex.: O começo de tudo" required></label>
+        <label>Link para assistir <span class="label-hint">YouTube, Shorts, transmissões ao vivo ou link direto .mp4/.webm/.ogg</span><input name="video_url" type="url" placeholder="https://youtu.be/... ou youtube.com/shorts/..." required></label>
+        <label>Descrição<textarea name="description" maxlength="2000" rows="3" placeholder="Do que se trata este episódio?"></textarea></label>
+        <label>Capa do episódio <span class="label-hint">Opcional · a primeira capa enviada também será a capa do dorama</span><input name="cover" type="file" accept="image/png,image/jpeg,image/webp"></label>
+        <button class="button primary full" type="submit">Adicionar à biblioteca <span>→</span></button>
+      </form>
+    </section>
+  </div>
+
+  <div id="profileModal" class="modal-backdrop hidden">
+    <section class="modal form-modal profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><button class="modal-close" data-close="profileModal" aria-label="Fechar">×</button><span class="eyebrow">SEU ESPAÇO NO CLUBE</span><h2 id="profileTitle">Seu perfil</h2>
+      <form id="profileForm" class="modal-form">
+        <label>Nome de exibição<input name="display_name" maxlength="50" required></label>
+        <label>Sobre mim<textarea name="bio" maxlength="280" rows="3" placeholder="Uma frase sobre você"></textarea></label>
+        <label>Foto de perfil <span class="label-hint">JPG, PNG ou WebP · até 3 MB</span><input name="avatar" type="file" accept="image/png,image/jpeg,image/webp"></label>
+        <div class="profile-divider"></div><span class="eyebrow">ALTERAR SENHA</span>
+        <label>Senha atual<input name="current_password" type="password" autocomplete="current-password" placeholder="Deixe em branco para manter"></label>
+        <label>Nova senha<input name="new_password" type="password" minlength="10" autocomplete="new-password" placeholder="Pelo menos 10 caracteres"></label>
+        <button class="button primary full" type="submit">Salvar perfil <span>→</span></button>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    const state = { me: null, episodes: [], users: [], series: {}, recommendations: [], selectedEpisode: null, selectedSeriesKey: null, toastTimer: null, carouselTimer: null, carouselSignature: '' };
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const initials = name => (name || '?').trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
+    const avatarHtml = (user, className = 'avatar') => user.avatar ? `<img class="${className}" src="${escapeHtml(user.avatar)}" alt="">` : `<span class="${className}">${escapeHtml(initials(user.display_name || user.username))}</span>`;
+    const statusText = {new:'Não começou',watching:'Assistindo',done:'Concluído'};
+    const dramaGenres = ['Ação','Aventura','Comédia','Crime','Drama','Fantasia','Ficção científica','Histórico','Mistério','Romance','Suspense','Terror','Vida escolar'];
+    function toast(message) { const node = $('#toast'); node.textContent = message; node.classList.add('visible'); clearTimeout(state.toastTimer); state.toastTimer = setTimeout(() => node.classList.remove('visible'), 3000); }
+    function applyTheme(theme, persist = false) {
+      const selectedTheme = theme === 'light' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = selectedTheme;
+      const nextTheme = selectedTheme === 'dark' ? 'claro' : 'escuro';
+      const icon = selectedTheme === 'dark' ? '☼' : '☾';
+      ['#authThemeToggle', '#appThemeToggle'].forEach(selector => {
+        const button = $(selector);
+        button.textContent = icon;
+        button.setAttribute('aria-label', `Ativar tema ${nextTheme}`);
+        button.title = `Ativar tema ${nextTheme}`;
+      });
+      $('meta[name="theme-color"]').content = selectedTheme === 'dark' ? '#100d18' : '#f5f2fa';
+      if (persist) {
+        try { localStorage.setItem('clube-theme', selectedTheme); }
+        catch { toast('O tema mudou, mas não foi possível salvar a preferência neste navegador.'); }
+      }
+    }
+    async function api(path, options = {}) {
+      const response = await fetch(path, { ...options, headers: { 'Content-Type':'application/json', ...(options.headers || {}) } });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error || 'Não foi possível completar esta ação.');
+      return body;
+    }
+    function authMode(mode) {
+      $$('.auth-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.auth === mode));
+      $('#loginForm').classList.toggle('hidden', mode !== 'login');
+      $('#registerForm').classList.toggle('hidden', mode !== 'register');
+    }
+    async function refresh() {
+      const data = await api('/api/data'); state.me = data.me; state.episodes = data.episodes; state.users = data.users; state.series = data.series || {}; state.recommendations = Array.isArray(data.recommendations) ? data.recommendations : [];
+      $('#authScreen').classList.add('hidden'); $('#app').classList.remove('hidden');
+      $('#topName').textContent = state.me.display_name;
+      $('#topAvatar').outerHTML = avatarHtml(state.me, 'avatar').replace('class="avatar"', 'id="topAvatar" class="avatar"');
+      renderProfilePopover();
+      if (state.selectedEpisode) {
+        state.selectedEpisode = state.episodes.find(episode => episode.id === state.selectedEpisode.id) || null;
+        if (state.selectedEpisode && !$('#episodeModal').classList.contains('hidden')) {
+          renderEpisodeMembers(state.selectedEpisode); renderComments(state.selectedEpisode);
+        }
+      }
+      render();
+    }
+    function render() {
+      renderStats(); renderEpisodes(); renderHomeDramaCarousel(); renderMembers(); renderProfilePage(); setRecommendationOptions(); renderRecommendations(); renderNotificationBell();
+      if (state.selectedSeriesKey && !$('#dramaModal').classList.contains('hidden')) renderDramaModal(state.selectedSeriesKey);
+    }
+    function renderHomeDramaCarousel() {
+      const grouped = new Map();
+      state.episodes.forEach(episode => {
+        const key = episode.series.trim().toLocaleLowerCase('pt-BR');
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(episode);
+      });
+      const dramas = [...grouped.entries()].map(([key, episodes]) => ({
+        key,
+        series: episodes[0].series,
+        episodes: episodes.sort((a, b) => a.season - b.season || a.episode_number - b.episode_number),
+        cover: episodes.find(episode => episode.cover)?.cover || ''
+      }));
+      const signature = JSON.stringify(dramas.map(drama => [drama.key, drama.series, drama.cover, drama.episodes.map(episode => [episode.id, (episode.progress[state.me.id] || {}).status])]));
+      if (signature === state.carouselSignature) return;
+      const carousel = $('#homeDramaCarousel');
+      const previousScroll = carousel.scrollLeft;
+      carousel.innerHTML = dramas.map(drama => {
+        const firstEpisode = drama.episodes.find(episode => (episode.progress[state.me.id] || {}).status !== 'done') || drama.episodes[0];
+        return `<article class="home-drama-card">
+          <button class="home-drama-poster" type="button" data-home-drama="${escapeHtml(drama.key)}" aria-label="Ver episódios de ${escapeHtml(drama.series)}">${drama.cover ? `<img src="${escapeHtml(drama.cover)}" alt="Capa de ${escapeHtml(drama.series)}">` : '<span aria-hidden="true">✦</span>'}<span class="home-drama-poster-title">${escapeHtml(drama.series)}</span></button>
+          <div class="home-drama-card-info"><div><strong>${escapeHtml(drama.series)}</strong><span>${drama.episodes.length} ${drama.episodes.length === 1 ? 'episódio' : 'episódios'}</span></div><button class="button primary compact" type="button" data-home-watch="${escapeHtml(firstEpisode.id)}" data-home-watch-drama="${escapeHtml(drama.key)}"><span class="home-play-icon">▶</span> Assistir</button></div>
+        </article>`;
+      }).join('');
+      $('#homeDramaEmpty').classList.toggle('hidden', dramas.length > 0);
+      $$('.carousel-arrow').forEach(button => { button.disabled = dramas.length < 2; });
+      state.carouselSignature = signature;
+      carousel.scrollLeft = previousScroll;
+    }
+    function renderProfilePopover() {
+      if (!state.me) return;
+      $('#popoverIdentity').innerHTML = `${avatarHtml(state.me, 'popover-avatar')}<div><strong>${escapeHtml(state.me.display_name)}</strong><span>@${escapeHtml(state.me.username)}</span></div>`;
+      $('#popoverBio').textContent = state.me.bio || 'Este perfil ainda não tem uma descrição.';
+    }
+    function renderProfilePage() {
+      if (!state.me) return;
+      $('#profilePageAvatar').innerHTML = avatarHtml(state.me, 'profile-avatar-image');
+      $('#profilePageName').textContent = state.me.display_name;
+      $('#profilePageUsername').textContent = `@${state.me.username}`;
+      $('#profilePageBio').textContent = state.me.bio || 'Adicione uma descrição para contar um pouco sobre você.';
+      const watching = state.episodes.filter(episode => (episode.progress[state.me.id] || {}).status === 'watching').length;
+      const done = state.episodes.filter(episode => (episode.progress[state.me.id] || {}).status === 'done').length;
+      $('#profileEpisodeCount').textContent = state.episodes.length;
+      $('#profileWatchingCount').textContent = watching;
+      $('#profileDoneCount').textContent = done;
+      const favoriteSeries = Object.entries(state.series)
+        .filter(([, info]) => (info.favorites || {})[state.me.id])
+        .map(([key]) => {
+          const episodes = state.episodes.filter(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === key);
+          if (!episodes.length) return '';
+          const title = episodes[0].series;
+          const cover = episodes.find(episode => episode.cover)?.cover || '';
+          return `<button class="profile-favorite-card" type="button" data-drama-key="${escapeHtml(key)}"><span class="profile-favorite-cover">${cover ? `<img src="${escapeHtml(cover)}" alt="Capa de ${escapeHtml(title)}">` : '<span aria-hidden="true">✦</span>'}</span><strong>${escapeHtml(title)}</strong><span>${episodes.length} ${episodes.length === 1 ? 'episódio' : 'episódios'}</span></button>`;
+        }).filter(Boolean);
+      $('#profileFavorites').innerHTML = favoriteSeries.join('');
+      $('#profileFavoritesEmpty').classList.toggle('hidden', favoriteSeries.length > 0);
+      const recentEpisodes = state.episodes
+        .filter(episode => Number((episode.progress[state.me.id] || {}).last_opened) > 0)
+        .sort((a, b) => Number(b.progress[state.me.id].last_opened) - Number(a.progress[state.me.id].last_opened) || b.season - a.season || b.episode_number - a.episode_number)
+        .slice(0, 8);
+      $('#profileRecentEpisodes').innerHTML = recentEpisodes.map(episode => `
+        <button class="profile-recent-card" type="button" data-recent-episode="${escapeHtml(episode.id)}">
+          <span class="profile-recent-cover">${episode.cover ? `<img src="${escapeHtml(episode.cover)}" alt="">` : '<span aria-hidden="true">✦</span>'}</span>
+          <span class="profile-recent-info"><strong>${escapeHtml(episode.series)}</strong><span>Temporada ${episode.season} · Episódio ${episode.episode_number}</span><span>${escapeHtml(episode.title)}</span><small>Aberto em ${new Date(Number(episode.progress[state.me.id].last_opened)).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}</small></span>
+          <span class="profile-recent-play" aria-hidden="true">▶</span>
+        </button>`).join('');
+      $('#profileRecentEmpty').classList.toggle('hidden', recentEpisodes.length > 0);
+    }
+    function setView(view) {
+      const views = {library:'#libraryView',members:'#membersView',profile:'#profileView'};
+      if (!views[view]) return;
+      Object.entries(views).forEach(([name, selector]) => $(selector).classList.toggle('hidden', name !== view));
+      $$('.nav-link').forEach(link => link.classList.toggle('active', link.dataset.view === view));
+      $('#profilePopover').classList.add('hidden');
+      $('#profileButton').setAttribute('aria-expanded', 'false');
+      if (view === 'profile') renderProfilePage();
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function openProfileEditor() {
+      $('#profilePopover').classList.add('hidden');
+      $('#profileButton').setAttribute('aria-expanded', 'false');
+      const form = $('#profileForm');
+      form.elements.display_name.value = state.me.display_name;
+      form.elements.bio.value = state.me.bio || '';
+      form.elements.avatar.value = '';
+      form.elements.current_password.value = '';
+      form.elements.new_password.value = '';
+      showModal('profileModal');
+    }
+    function renderStats() {
+      const watching = state.episodes.reduce((sum, episode) => sum + state.users.filter(user => (episode.progress[user.id] || {}).status === 'watching').length, 0);
+      const done = state.episodes.reduce((sum, episode) => sum + state.users.filter(user => (episode.progress[user.id] || {}).status === 'done').length, 0);
+      $('#statEpisodes').textContent = state.episodes.length;
+      $('#statWatching').textContent = watching;
+      $('#statFinished').textContent = done;
+      $('#statMembers').textContent = state.users.length;
+      $('#membersTotal').textContent = state.users.length;
+    }
+    function openAddEpisode(series = '') {
+      const form = $('#episodeForm');
+      form.reset();
+      form.elements.series.value = series;
+      if (series) {
+        const existing = state.episodes.filter(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === series.trim().toLocaleLowerCase('pt-BR'));
+        if (existing.length) {
+          const season = Math.max(...existing.map(episode => episode.season));
+          const nextEpisode = Math.max(...existing.filter(episode => episode.season === season).map(episode => episode.episode_number)) + 1;
+          form.elements.season.value = season;
+          form.elements.episode.value = nextEpisode;
+        }
+      }
+      showModal('addModal');
+    }
+    function renderEpisodes() {
+      const query = $('#searchInput').value.trim().toLocaleLowerCase('pt-BR'), filter = $('#filterSelect').value;
+      const visibleEpisodes = state.episodes.filter(episode => {
+        const mine = (episode.progress[state.me.id] || {}).status || 'new';
+        return (filter === 'all' || mine === filter) && `${episode.series} ${episode.title} ${episode.description}`.toLocaleLowerCase('pt-BR').includes(query);
+      });
+      const groups = new Map();
+      visibleEpisodes.forEach(episode => {
+        const key = episode.series.trim().toLocaleLowerCase('pt-BR');
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(episode);
+      });
+      $('#episodeGrid').innerHTML = [...groups.entries()].map(([key, episodes]) => {
+        const series = episodes[0].series;
+        const allSeriesEpisodes = state.episodes.filter(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === series.trim().toLocaleLowerCase('pt-BR'));
+        const cover = allSeriesEpisodes.find(episode => episode.cover)?.cover || '';
+        return `<button class="drama-card" type="button" data-drama-key="${escapeHtml(key)}" aria-label="Abrir ${escapeHtml(series)}">
+          <span class="drama-card-cover">${cover ? `<img src="${escapeHtml(cover)}" alt="Capa de ${escapeHtml(series)}">` : '<span aria-hidden="true">✦</span>'}</span>
+          <span class="drama-card-info"><span class="eyebrow">DORAMA</span><strong>${escapeHtml(series)}</strong><span>${allSeriesEpisodes.length} ${allSeriesEpisodes.length === 1 ? 'episódio' : 'episódios'} · Toque para ver</span></span>
+        </button>`;
+      }).join('');
+      $('#emptyState').classList.toggle('hidden', state.episodes.length > 0);
+      $('#episodeGrid').classList.toggle('hidden', state.episodes.length === 0);
+      if (state.episodes.length && !visibleEpisodes.length) $('#episodeGrid').innerHTML = '<div class="no-results">Nenhum episódio encontrado com esse filtro.</div>';
+    }
+    function renderDramaModal(seriesKey, resetGenreDraft = false) {
+      const episodes = state.episodes.filter(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === seriesKey);
+      if (!episodes.length) return;
+      const series = episodes[0].series;
+      const seriesInfo = state.series[seriesKey] || {background_url:'',genres:{},ratings:{},comments:[]};
+      const genresByUser = seriesInfo.genres || {}, ratingsByUser = seriesInfo.ratings || {}, dramaComments = seriesInfo.comments || [];
+      const isFavorite = Boolean((seriesInfo.favorites || {})[state.me.id]);
+      const preferenceForm = $('#dramaPreferenceForm');
+      const hasPreferenceDraft = Boolean(preferenceForm && !resetGenreDraft);
+      const isEditingGenres = hasPreferenceDraft && preferenceForm.dataset.editing === 'true';
+      const hasSavedGenres = Object.prototype.hasOwnProperty.call(genresByUser, state.me.id);
+      const selectedGenres = new Set(hasPreferenceDraft
+        ? $$('#dramaPreferenceForm input[name="genres"]:checked').map(input => input.value)
+        : (genresByUser[state.me.id] || []));
+      const selectedRating = ratingsByUser[state.me.id] || 0;
+      const previousMedia = $('#dramaBackgroundMedia')?.firstElementChild || null;
+      const previousBackgroundUrl = $('#dramaBackgroundMedia')?.dataset.videoUrl || '';
+      const ratingDraft = hasPreferenceDraft ? Number($('#dramaRatingValue').value) : selectedRating;
+      const backgroundDraft = $('#dramaBackgroundForm input[name="background_url"]')?.value ?? seriesInfo.background_url ?? '';
+      const commentDraft = $('#dramaCommentForm textarea[name="text"]')?.value || '';
+      const cover = episodes.find(episode => episode.cover)?.cover || '';
+      const description = episodes.find(episode => episode.description)?.description || 'Uma história para acompanhar com o clube.';
+      const watching = episodes.reduce((total, episode) => total + Object.values(episode.progress).filter(item => item.status === 'watching').length, 0);
+      const done = episodes.reduce((total, episode) => total + Object.values(episode.progress).filter(item => item.status === 'done').length, 0);
+      const ratingValues = Object.values(ratingsByUser);
+      const averageRating = ratingValues.length ? ratingValues.reduce((total, value) => total + value, 0) / ratingValues.length : 0;
+      const genreCounts = {};
+      Object.values(genresByUser).forEach(genres => genres.forEach(genre => { genreCounts[genre] = (genreCounts[genre] || 0) + 1; }));
+      const communityGenres = Object.entries(genreCounts).sort((a, b) => b[1] - a[1]).map(([genre, count]) => `<span class="genre-tag">${escapeHtml(genre)} <small>${count}</small></span>`).join('') || '<span class="genre-empty">Ainda não há gêneros marcados.</span>';
+      const preferences = state.users.map(user => {
+        const name = user.id === state.me.id ? 'Você' : user.display_name;
+        const genres = (genresByUser[user.id] || []).map(genre => `<span class="genre-tag">${escapeHtml(genre)}</span>`).join('');
+        return genres ? `<div class="genre-member">${avatarHtml(user, 'comment-avatar')}<div><strong>${escapeHtml(name)}</strong><span>${genres}</span></div></div>` : '';
+      }).join('') || '<p class="genre-empty">Os membros ainda não escolheram gêneros para este dorama.</p>';
+      const ratingVotes = state.users.filter(user => ratingsByUser[user.id]).map(user => {
+        const rating = ratingsByUser[user.id];
+        const name = user.id === state.me.id ? 'Você' : user.display_name;
+        return `<article class="rating-vote">${avatarHtml(user, 'comment-avatar')}<div class="rating-vote-member"><strong>${escapeHtml(name)}</strong><span class="rating-vote-stars" aria-label="${rating} de 5 estrelas">${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}</span></div><strong class="rating-vote-value">${rating} ${rating === 1 ? 'estrela' : 'estrelas'}</strong></article>`;
+      }).join('') || '<p class="genre-empty">Ainda não há votos. Seja a primeira pessoa a avaliar este dorama!</p>';
+      const reviews = [...dramaComments].reverse().map(comment => {
+        const author = state.users.find(user => user.id === comment.user_id);
+        if (!author) return '';
+        return `<article class="comment">${avatarHtml(author, 'comment-avatar')}<div><div class="comment-by"><strong>${escapeHtml(author.display_name)}</strong><span>${new Date(comment.created).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}</span></div><p>${escapeHtml(comment.text)}</p></div></article>`;
+      }).join('') || '<p class="no-comments">Seja a primeira pessoa a comentar sobre este dorama.</p>';
+      const episodesBySeason = new Map();
+      [...episodes].sort((a, b) => a.season - b.season || a.episode_number - b.episode_number).forEach(episode => {
+        if (!episodesBySeason.has(episode.season)) episodesBySeason.set(episode.season, []);
+        episodesBySeason.get(episode.season).push(episode);
+      });
+      const episodeRows = [...episodesBySeason.entries()].map(([season, seasonEpisodes]) => `
+        <section class="drama-season">
+          <h4 class="drama-season-heading">Temporada ${season}<span>${seasonEpisodes.length} ${seasonEpisodes.length === 1 ? 'episódio' : 'episódios'}</span></h4>
+          ${seasonEpisodes.map(episode => {
+            const episodeWatching = Object.values(episode.progress).filter(item => item.status === 'watching').length;
+            const episodeDone = Object.values(episode.progress).filter(item => item.status === 'done').length;
+            return `<article class="drama-episode"><div class="drama-episode-number">T${episode.season}<span>E${episode.episode_number}</span></div><div class="drama-episode-info"><strong>${escapeHtml(episode.title)}</strong><span>▶ ${episodeWatching} assistindo <i>·</i> ✓ ${episodeDone} concluíram</span></div><button class="drama-watch-button" type="button" data-episode="${escapeHtml(episode.id)}" aria-label="Assistir ${escapeHtml(episode.title)}">▶ <span>Assistir</span></button></article>`;
+          }).join('')}
+        </section>`).join('');
+      const backgroundVideo = seriesInfo.background_url ? safeVideo(seriesInfo.background_url, true) : null;
+      const backgroundMedia = backgroundVideo ? backgroundVideo.type === 'youtube'
+        ? `<iframe src="${escapeHtml(backgroundVideo.src)}" title="Vídeo de fundo de ${escapeHtml(series)}" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>`
+        : `<video src="${escapeHtml(backgroundVideo.src)}" autoplay muted loop playsinline controls></video>`
+        : '';
+      $('#dramaModalContent').innerHTML = `<header class="drama-modal-header">
+        <div id="dramaBackgroundMedia" class="drama-background-media" data-video-url="${escapeHtml(seriesInfo.background_url || '')}">${backgroundMedia}</div>
+        <div class="drama-modal-cover">${cover ? `<img src="${escapeHtml(cover)}" alt="Capa de ${escapeHtml(series)}">` : '<span aria-hidden="true">✦</span>'}</div>
+        <div class="drama-modal-info"><span class="eyebrow">DORAMA</span><h2 id="dramaTitle">${escapeHtml(series)}</h2><p>${escapeHtml(description)}</p><div class="drama-stats"><span>${episodes.length} ${episodes.length === 1 ? 'episódio' : 'episódios'}</span><span>▶ ${watching} assistindo</span><span>✓ ${done} concluídos</span></div><div class="drama-modal-actions"><button class="button primary drama-add-button" type="button" data-add-series="${escapeHtml(series)}">＋ Adicionar episódio</button><button class="drama-favorite-button${isFavorite ? ' is-favorite' : ''}" type="button" data-toggle-favorite aria-pressed="${isFavorite}">${isFavorite ? '♥ Favoritado' : '♡ Favoritar'}</button></div></div>
+      </header>
+      <section class="drama-community">
+        <h3>Gêneros do dorama</h3><div class="genre-tags">${communityGenres}</div>
+        <div class="drama-preference-form">
+          <form id="dramaPreferenceForm" data-series="${escapeHtml(series)}" data-editing="${isEditingGenres}">
+            <fieldset class="genre-picker"${isEditingGenres ? '' : ' disabled'}><legend>Escolha até três gêneros</legend>${dramaGenres.map(genre => `<label class="genre-option"><input type="checkbox" name="genres" value="${escapeHtml(genre)}"${selectedGenres.has(genre) ? ' checked' : ''}><span>${escapeHtml(genre)}</span></label>`).join('')}</fieldset>
+            <div class="genre-form-actions">
+              <button class="button compact" type="button" data-edit-genres>${hasSavedGenres ? 'Alterar gênero(s)' : 'Escolher gênero(s)'}</button>
+              <button class="button primary compact${isEditingGenres ? '' : ' hidden'}" type="submit">Salvar gênero(s)</button>
+              <button class="button compact genre-cancel-button${isEditingGenres ? '' : ' hidden'}" type="button" data-cancel-genres>Cancelar</button>
+            </div>
+          </form>
+          <form id="dramaRatingForm" class="drama-rating-control" data-series="${escapeHtml(series)}">
+            <div><strong>Sua nota</strong><span class="rating-summary">${selectedRating ? `Sua avaliação atual: ${selectedRating} de 5 estrelas` : 'Você ainda não avaliou este dorama.'}</span></div><div class="rating-picker" role="group" aria-label="Sua nota de uma a cinco estrelas">${[1,2,3,4,5].map(value => `<button type="button" class="${value <= ratingDraft ? 'selected' : ''}" data-rating="${value}" aria-label="${value} ${value === 1 ? 'estrela' : 'estrelas'}" aria-pressed="${ratingDraft === value}">★</button>`).join('')}<input id="dramaRatingValue" name="rating" type="hidden" value="${ratingDraft}"><button class="button primary compact" type="submit">Salvar nota</button></div>
+          </form>
+        </div>
+        <div class="genre-member-list">${preferences}</div>
+      </section>
+      <section class="drama-modal-episodes"><h3>Episódios</h3><div class="drama-episode-list">${episodeRows}</div></section>
+      <section class="drama-discussion"><h3>Comentários do dorama <span>${dramaComments.length}</span></h3><form id="dramaCommentForm" data-series="${escapeHtml(series)}"><textarea name="text" maxlength="1000" placeholder="Escreva um comentário sobre este dorama..." required>${escapeHtml(commentDraft)}</textarea><button class="button primary compact" type="submit">Comentar <span>→</span></button></form><div class="comment-list">${reviews}</div></section>
+      <section class="drama-ratings">
+        <div class="drama-ratings-heading"><div><h3>Avaliações dos membros</h3><p>Veja quem votou e a nota de cada pessoa.</p></div><div class="drama-ratings-average"><span>MÉDIA</span><strong>${ratingValues.length ? averageRating.toFixed(1).replace('.', ',') : '—'}</strong><span>/ 5 · ${ratingValues.length} ${ratingValues.length === 1 ? 'voto' : 'votos'}</span></div></div>
+        <div class="rating-vote-list">${ratingVotes}</div>
+      </section>
+      <section class="drama-background-settings"><h3>Vídeo de fundo</h3><p>O vídeo tenta começar automaticamente sem som. Se o navegador bloquear a reprodução automática, use os controles do próprio vídeo.</p><form id="dramaBackgroundForm" data-series="${escapeHtml(series)}"><input name="background_url" type="url" maxlength="500" value="${escapeHtml(backgroundDraft)}" placeholder="Link do YouTube ou vídeo .mp4/.webm/.ogg" aria-label="Link do vídeo de fundo"><button class="button compact" type="submit">Salvar link</button></form></section>
+      `;
+      const mediaContainer = $('#dramaBackgroundMedia');
+      if (previousMedia && previousBackgroundUrl === mediaContainer.dataset.videoUrl) mediaContainer.replaceChildren(previousMedia);
+      updateGenreLimit();
+    }
+    function openDrama(seriesKey) {
+      state.selectedSeriesKey = seriesKey;
+      showModal('dramaModal');
+      renderDramaModal(seriesKey);
+    }
+    function updateGenreLimit() {
+      const picker = $('#dramaPreferenceForm .genre-picker');
+      if (!picker || picker.disabled) return;
+      const selected = $$('#dramaPreferenceForm input[name="genres"]:checked');
+      const limitReached = selected.length >= 3;
+      $$('#dramaPreferenceForm input[name="genres"]').forEach(input => { input.disabled = limitReached && !input.checked; });
+    }
+    function renderMembers() {
+      $('#memberGrid').innerHTML = state.users.filter(user => user.id !== state.me.id).map(user => {
+        const watching = state.episodes.filter(ep => (ep.progress[user.id] || {}).status === 'watching');
+        const done = state.episodes.filter(ep => (ep.progress[user.id] || {}).status === 'done').length;
+        const current = watching[0], name = user.display_name;
+        return `<article class="member-card">${avatarHtml(user, 'member-avatar')}<div class="member-info"><strong>${escapeHtml(name)}</strong><span>@${escapeHtml(user.username)}</span><p>${escapeHtml(user.bio || 'Pronto para a próxima história.')}</p></div><div class="member-progress"><strong>${done}<small> concluídos</small></strong><span>${current ? `Assistindo: ${escapeHtml(current.series)} · T${current.season} E${current.episode_number}${current.note ? ` · ${escapeHtml(current.note)}` : ''}` : 'Sem episódio em andamento'}</span></div><button class="button compact recommend-member-button" type="button" data-recommend-user="${escapeHtml(user.id)}">Recomendar</button></article>`;
+      }).join('');
+    }
+    function renderRecommendations() {
+      const incoming = state.recommendations.filter(item => item.to_user_id === state.me.id).sort((a, b) => b.created - a.created);
+      const list = $('#recommendationList');
+      if (!incoming.length) {
+        list.innerHTML = '';
+        $('#recommendationEmpty').classList.remove('hidden');
+        return;
+      }
+      $('#recommendationEmpty').classList.add('hidden');
+      list.innerHTML = incoming.map(item => {
+        const from = state.users.find(user => user.id === item.from_user_id);
+        const seriesLabel = escapeHtml(item.series);
+        const fromLabel = from ? escapeHtml(from.display_name) : 'Alguém';
+        const seriesKey = String(item.series || '').trim().toLocaleLowerCase('pt-BR');
+        return `<button class="recommendation-card" type="button" data-recommend-series="${escapeHtml(seriesKey)}" data-recommend-title="${seriesLabel}"><div class="recommendation-badge">✦</div><div class="recommendation-copy"><strong>${fromLabel} recomendou para você</strong><span>${seriesLabel}</span></div></button>`;
+      }).join('');
+    }
+    function renderNotificationBell() {
+      const incoming = state.recommendations.filter(item => item.to_user_id === state.me.id).sort((a, b) => b.created - a.created);
+      const badge = $('#notificationBadge');
+      const list = $('#notificationList');
+      const empty = $('#notificationEmpty');
+      const count = incoming.length;
+      badge.textContent = String(count);
+      badge.classList.toggle('hidden', count === 0);
+      if (!incoming.length) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+      list.innerHTML = incoming.slice(0, 5).map(item => {
+        const from = state.users.find(user => user.id === item.from_user_id);
+        const label = from ? from.display_name : 'Alguém';
+        const seriesKey = String(item.series || '').trim().toLocaleLowerCase('pt-BR');
+        return `<button class="notification-item" type="button" data-recommend-series="${escapeHtml(seriesKey)}"><span class="notification-dot" aria-hidden="true">✦</span><span class="notification-copy"><strong>${escapeHtml(label)} recomendou</strong><small>${escapeHtml(item.series)}</small></span></button>`;
+      }).join('');
+    }
+    function setRecommendationOptions() {
+      const target = $('#recommendTarget');
+      const series = $('#recommendSeries');
+      const seriesNames = [...new Set(state.episodes.map(episode => episode.series.trim()))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      const recipients = state.users.filter(user => user.id !== state.me.id);
+      target.innerHTML = recipients.length
+        ? recipients.map(user => `<option value="${escapeHtml(user.id)}">${escapeHtml(user.display_name)}</option>`).join('')
+        : '<option value="">Nenhum membro disponível</option>';
+      series.innerHTML = seriesNames.length
+        ? seriesNames.map(name => `<option value="${escapeHtml(name.trim().toLocaleLowerCase('pt-BR'))}">${escapeHtml(name)}</option>`).join('')
+        : '<option value="">Nenhum dorama na biblioteca</option>';
+      target.disabled = recipients.length === 0;
+      series.disabled = seriesNames.length === 0;
+    }
+    function openRecommendModal(userId = '') {
+      setRecommendationOptions();
+      const target = $('#recommendTarget');
+      const series = $('#recommendSeries');
+      if (userId && [...target.options].some(option => option.value === userId)) {
+        target.value = userId;
+      }
+      if (!series.value && series.options.length) {
+        series.selectedIndex = 0;
+      }
+      showModal('recommendModal');
+    }
+    function safeVideo(url, autoplay = false) {
+      try {
+        const parsed = new URL(url);
+        const youtubeHosts = ['youtube.com','www.youtube.com','m.youtube.com','music.youtube.com','youtu.be','youtube-nocookie.com','www.youtube-nocookie.com'];
+        if (youtubeHosts.includes(parsed.hostname)) {
+          let id = parsed.hostname === 'youtu.be' ? parsed.pathname.split('/')[1] : parsed.searchParams.get('v');
+          const pathMatch = parsed.pathname.match(/^\/(?:embed|shorts|live|v)\/([\w-]{11})(?:\/|$)/);
+          if (!id && pathMatch) id = pathMatch[1];
+          if (id && /^[\w-]{11}$/.test(id)) {
+            const timestamp = parsed.searchParams.get('start') || parsed.searchParams.get('t') || '0';
+            const timestampMatch = timestamp.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
+            const start = /^\d+$/.test(timestamp)
+              ? Number(timestamp)
+              : timestampMatch && (timestampMatch[1] || timestampMatch[2] || timestampMatch[3])
+                ? Number(timestampMatch[1] || 0) * 3600 + Number(timestampMatch[2] || 0) * 60 + Number(timestampMatch[3] || 0)
+                : 0;
+            const params = new URLSearchParams();
+            if (autoplay) {
+              params.set('autoplay', '1');
+              params.set('mute', '1');
+              params.set('loop', '1');
+              params.set('playlist', id);
+              params.set('controls', '1');
+            } else if (Number.isFinite(start) && start > 0) {
+              params.set('start', String(start));
+            }
+            params.set('playsinline', '1');
+            params.set('rel', '0');
+            const query = params.toString();
+            return {type:'youtube', src:`https://www.youtube-nocookie.com/embed/${id}${query ? `?${query}` : ''}`, externalUrl:`https://www.youtube.com/watch?v=${id}${start > 0 ? `&t=${start}s` : ''}`};
+          }
+        }
+        if (parsed.protocol === 'https:' && /\.(mp4|webm|ogg)$/i.test(parsed.pathname)) return {type:'direct', src:parsed.href, externalUrl:parsed.href};
+      } catch {}
+      return null;
+    }
+    async function openEpisode(id) {
+      const episode = state.episodes.find(item => item.id === id); if (!episode) return;
+      state.selectedEpisode = episode;
+      $('#watchArea').style.backgroundImage = episode.cover ? `linear-gradient(#100d1840,#100d1840),url("${episode.cover}")` : '';
+      const video = safeVideo(episode.video_url);
+      $('#watchArea').innerHTML = video ? video.type === 'youtube' ? `<iframe src="${escapeHtml(video.src)}" title="${escapeHtml(episode.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>` : `<video controls playsinline poster="${escapeHtml(episode.cover || '')}" src="${escapeHtml(video.src)}"></video>` : '<div class="video-unavailable">O link deste vídeo não é compatível.</div>';
+      const externalVideoLink = $('#externalVideoLink');
+      externalVideoLink.classList.toggle('hidden', !video?.externalUrl);
+      externalVideoLink.href = video?.externalUrl || '#';
+      externalVideoLink.textContent = video?.type === 'youtube' ? 'Abrir vídeo no YouTube ↗' : 'Abrir vídeo em nova aba ↗';
+      $('#episodeMeta').textContent = `${episode.series}  /  TEMPORADA ${episode.season} · EPISÓDIO ${episode.episode_number}`;
+      $('#episodeTitle').textContent = episode.title; $('#episodeDescription').textContent = episode.description || 'Sem descrição para este episódio.';
+      const mine = episode.progress[state.me.id] || {status:'new', note:''};
+      $('#progressSelect').value = mine.status; $('#progressNote').value = mine.note || '';
+      $('#mentionSelect').innerHTML = state.users.filter(user => user.id !== state.me.id).map(user => `<option value="${escapeHtml(user.id)}">${escapeHtml(user.display_name)}</option>`).join('');
+      renderEpisodeMembers(episode); renderComments(episode);
+      $('#episodeModal').classList.remove('hidden'); document.body.classList.add('modal-open');
+      try {
+        const result = await api(`/api/episodes/${encodeURIComponent(episode.id)}/open`, {method:'POST',body:'{}'});
+        episode.progress[state.me.id] = result.progress;
+        renderProfilePage();
+      } catch(error) {
+        toast(`O episódio abriu, mas não foi possível atualizar seus recentes: ${error.message}`);
+      }
+    }
+    function renderEpisodeMembers(episode) {
+      $('#episodeMembers').innerHTML = state.users.map(user => {
+        const progress = episode.progress[user.id] || {status:'new',note:''};
+        return `<div class="episode-member">${avatarHtml(user, 'mini-avatar')}<span>${escapeHtml(user.id === state.me.id ? 'Você' : user.display_name)}</span><div><strong class="status-${progress.status}">${statusText[progress.status] || statusText.new}</strong>${progress.note ? `<small>${escapeHtml(progress.note)}</small>` : ''}</div></div>`;
+      }).join('');
+    }
+    function renderComments(episode) {
+      $('#commentCount').textContent = episode.comments.length;
+      $('#commentList').innerHTML = [...episode.comments].reverse().map(comment => {
+        const author = state.users.find(user => user.id === comment.user_id);
+        if (!author) return '';
+        const tagged = (comment.mentions || []).map(id => state.users.find(user => user.id === id)).filter(Boolean).map(user => ` <span class="mention">@${escapeHtml(user.display_name)}</span>`).join('');
+        return `<article class="comment">${avatarHtml(author, 'comment-avatar')}<div><div class="comment-by"><strong>${escapeHtml(author.display_name)}</strong><span>${new Date(comment.created).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}</span></div><p>${escapeHtml(comment.text)}${tagged}</p></div></article>`;
+      }).join('') || '<p class="no-comments">Seja a primeira pessoa a comentar.</p>';
+    }
+    function showModal(id) { $(`#${id}`).classList.remove('hidden'); document.body.classList.add('modal-open'); }
+    function hideModal(id) {
+      $(`#${id}`).classList.add('hidden');
+      if (id === 'dramaModal') {
+        state.selectedSeriesKey = null;
+        $('#dramaModalContent').replaceChildren();
+      }
+      if (!$('.modal-backdrop:not(.hidden)')) document.body.classList.remove('modal-open');
+    }
+    function fileData(file) {
+      return new Promise((resolve, reject) => {
+        if (!file || !file.name) return resolve('');
+        if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 3 * 1024 * 1024) return reject(new Error('Use uma imagem JPG, PNG ou WebP de até 3 MB.'));
+        const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => reject(new Error('Não foi possível ler a imagem.')); reader.readAsDataURL(file);
+      });
+    }
+    $$('.auth-tab').forEach(tab => tab.addEventListener('click', () => authMode(tab.dataset.auth)));
+    ['#authThemeToggle', '#appThemeToggle'].forEach(selector => $(selector).addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light', true)));
+    $('#loginForm').addEventListener('submit', async event => { event.preventDefault(); try { const data = Object.fromEntries(new FormData(event.currentTarget)); await api('/api/login',{method:'POST',body:JSON.stringify(data)}); await refresh(); } catch(error) { toast(error.message); } });
+    $('#registerForm').addEventListener('submit', async event => { event.preventDefault(); try { const data = Object.fromEntries(new FormData(event.currentTarget)); await api('/api/register',{method:'POST',body:JSON.stringify(data)}); await refresh(); } catch(error) { toast(error.message); } });
+    $('#logoutButton').addEventListener('click', async () => { try { await api('/api/logout',{method:'POST',body:'{}'}); state.me = null; $('#app').classList.add('hidden'); $('#authScreen').classList.remove('hidden'); authMode('login'); } catch(error) { toast(error.message); } });
+    ['#addEpisodeButton','#heroAddButton','#emptyAddButton'].forEach(selector => $(selector).addEventListener('click', () => openAddEpisode()));
+    $('#episodeGrid').addEventListener('click', event => {
+      const dramaCard = event.target.closest('[data-drama-key]');
+      if (dramaCard) openDrama(dramaCard.dataset.dramaKey);
+    });
+    $('#homeDramaCarousel').addEventListener('click', event => {
+      const watchButton = event.target.closest('[data-home-watch]');
+      if (watchButton) {
+        openDrama(watchButton.dataset.homeWatchDrama);
+        openEpisode(watchButton.dataset.homeWatch);
+        return;
+      }
+      const dramaButton = event.target.closest('[data-home-drama]');
+      if (dramaButton) openDrama(dramaButton.dataset.homeDrama);
+    });
+    $$('.carousel-arrow').forEach(button => button.addEventListener('click', () => {
+      const carousel = $('#homeDramaCarousel');
+      const card = $('.home-drama-card', carousel);
+      if (!card) return;
+      const gap = Number.parseFloat(getComputedStyle(carousel).columnGap) || 0;
+      carousel.scrollBy({left:(card.getBoundingClientRect().width + gap) * Number(button.dataset.carouselDirection),behavior:'smooth'});
+    }));
+    $('#profileRecentEpisodes').addEventListener('click', event => {
+      const recentEpisode = event.target.closest('[data-recent-episode]');
+      if (recentEpisode) {
+        state.selectedSeriesKey = null;
+        openEpisode(recentEpisode.dataset.recentEpisode);
+      }
+    });
+    $('#dramaModal').addEventListener('click', event => {
+      if (event.target.closest('[data-toggle-favorite]')) {
+        const series = state.episodes.find(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === state.selectedSeriesKey)?.series;
+        if (series) {
+          const seriesInfo = state.series[state.selectedSeriesKey] || {};
+          const favorite = !((seriesInfo.favorites || {})[state.me.id]);
+          api(`/api/series/${encodeURIComponent(series)}/favorite`, {method:'POST',body:JSON.stringify({favorite})})
+            .then(async () => { await refresh(); toast(favorite ? 'Dorama adicionado aos favoritos.' : 'Dorama removido dos favoritos.'); })
+            .catch(error => toast(error.message));
+        }
+        return;
+      }
+      const ratingButton = event.target.closest('[data-rating]');
+      if (ratingButton) {
+        $('#dramaRatingValue').value = ratingButton.dataset.rating;
+        $$('.rating-picker [data-rating]').forEach(button => {
+          const selected = Number(button.dataset.rating) <= Number(ratingButton.dataset.rating);
+          button.classList.toggle('selected', selected);
+          button.setAttribute('aria-pressed', String(button === ratingButton));
+        });
+        return;
+      }
+      const editGenresButton = event.target.closest('[data-edit-genres]');
+      if (editGenresButton) {
+        const form = $('#dramaPreferenceForm');
+        form.dataset.editing = 'true';
+        form.querySelector('.genre-picker').disabled = false;
+        editGenresButton.classList.add('hidden');
+        form.querySelector('[type="submit"]').classList.remove('hidden');
+        form.querySelector('[data-cancel-genres]').classList.remove('hidden');
+        updateGenreLimit();
+        return;
+      }
+      if (event.target.closest('[data-cancel-genres]')) {
+        renderDramaModal(state.selectedSeriesKey, true);
+        return;
+      }
+      const addButton = event.target.closest('[data-add-series]');
+      if (addButton) {
+        openAddEpisode(addButton.dataset.addSeries);
+        return;
+      }
+      const episodeButton = event.target.closest('[data-episode]');
+      if (episodeButton) openEpisode(episodeButton.dataset.episode);
+    });
+    $('#profileFavorites').addEventListener('click', event => {
+      const favoriteCard = event.target.closest('[data-drama-key]');
+      if (favoriteCard) openDrama(favoriteCard.dataset.dramaKey);
+    });
+    $('#memberGrid').addEventListener('click', event => {
+      const button = event.target.closest('[data-recommend-user]');
+      if (button) openRecommendModal(button.dataset.recommendUser);
+    });
+    $('#notificationButton').addEventListener('click', () => {
+      const popover = $('#notificationPopover');
+      const willOpen = popover.classList.contains('hidden');
+      popover.classList.toggle('hidden', !willOpen);
+      $('#notificationButton').setAttribute('aria-expanded', String(willOpen));
+    });
+    $('#notificationList').addEventListener('click', event => {
+      const item = event.target.closest('[data-recommend-series]');
+      if (!item) return;
+      const normalized = item.dataset.recommendSeries;
+      const match = state.episodes.find(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === normalized);
+      if (match) {
+        $('#notificationPopover').classList.add('hidden');
+        $('#notificationButton').setAttribute('aria-expanded', 'false');
+        openDrama(normalized);
+      }
+    });
+    $('#recommendationList').addEventListener('click', event => {
+      const card = event.target.closest('[data-recommend-series]');
+      if (card) {
+        const normalized = card.dataset.recommendSeries;
+        const match = state.episodes.find(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === normalized);
+        if (match) openDrama(normalized);
+      }
+    });
+    $('#recommendForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      try {
+        await api('/api/recommendations', {method:'POST', body: JSON.stringify({to_user_id: form.get('to_user_id'), series: form.get('series')})});
+        hideModal('recommendModal');
+        await refresh();
+        toast('Recomendação enviada.');
+      } catch (error) {
+        toast(error.message);
+      }
+    });
+    $('#dramaModal').addEventListener('change', event => {
+      if (event.target.matches('#dramaPreferenceForm input[name="genres"]')) updateGenreLimit();
+    });
+    $('#dramaModal').addEventListener('submit', async event => {
+      const form = event.target;
+      if (!form.matches('#dramaPreferenceForm, #dramaRatingForm, #dramaBackgroundForm, #dramaCommentForm')) return;
+      event.preventDefault();
+      const seriesPath = `/api/series/${encodeURIComponent(form.dataset.series)}`;
+      try {
+        if (form.id === 'dramaPreferenceForm') {
+          const genres = $$('#dramaPreferenceForm input[name="genres"]:checked').map(input => input.value);
+          form.dataset.editing = 'false';
+          await api(`${seriesPath}/preferences`, {method:'POST',body:JSON.stringify({genres})});
+          toast('Seus gêneros foram salvos.');
+        } else if (form.id === 'dramaRatingForm') {
+          const rating = Number($('#dramaRatingValue').value) || null;
+          await api(`${seriesPath}/preferences`, {method:'POST',body:JSON.stringify({rating})});
+          toast('Sua nota foi salva.');
+        } else if (form.id === 'dramaBackgroundForm') {
+          await api(`${seriesPath}/background`, {method:'POST',body:JSON.stringify({background_url:form.elements.background_url.value})});
+          toast('Link do vídeo de fundo salvo.');
+        } else {
+          await api(`${seriesPath}/comments`, {method:'POST',body:JSON.stringify({text:form.elements.text.value})});
+          form.reset();
+          toast('Comentário publicado.');
+        }
+        await refresh();
+      } catch(error) {
+        if (form.id === 'dramaPreferenceForm') form.dataset.editing = 'true';
+        toast(error.message);
+      }
+    });
+    $('#profileButton').addEventListener('click', () => {
+      const popover = $('#profilePopover');
+      const willOpen = popover.classList.contains('hidden');
+      popover.classList.toggle('hidden', !willOpen);
+      $('#profileButton').setAttribute('aria-expanded', String(willOpen));
+    });
+    $('#editProfileButton').addEventListener('click', () => setView('profile'));
+    $('#profileSettingsButton').addEventListener('click', openProfileEditor);
+    document.addEventListener('click', event => {
+      if (!$('#profileMenu').contains(event.target)) {
+        $('#profilePopover').classList.add('hidden');
+        $('#profileButton').setAttribute('aria-expanded', 'false');
+      }
+      if (!$('#notificationButton').closest('.notification-menu').contains(event.target)) {
+        $('#notificationPopover').classList.add('hidden');
+        $('#notificationButton').setAttribute('aria-expanded', 'false');
+      }
+    });
+    $$('[data-close]').forEach(button => button.addEventListener('click', () => {
+      const modalId = button.dataset.close;
+      hideModal(modalId);
+      if (modalId === 'episodeModal' && state.selectedSeriesKey) showModal('dramaModal');
+    }));
+    $$('.modal-backdrop').forEach(backdrop => backdrop.addEventListener('click', event => { if (event.target === backdrop) hideModal(backdrop.id); }));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        $('#profilePopover').classList.add('hidden');
+        $('#profileButton').setAttribute('aria-expanded', 'false');
+        $$('.modal-backdrop:not(.hidden)').forEach(modal => hideModal(modal.id));
+      }
+    });
+    $('#episodeForm').addEventListener('submit', async event => {
+      event.preventDefault(); const formElement = event.currentTarget; const form = new FormData(formElement);
+      try {
+        const cover = await fileData(form.get('cover'));
+        await api('/api/episodes',{method:'POST',body:JSON.stringify({series:form.get('series'),season:Number(form.get('season')),episode_number:Number(form.get('episode')),title:form.get('title'),video_url:form.get('video_url'),description:form.get('description'),cover})});
+        formElement.reset(); hideModal('addModal'); await refresh(); toast('Episódio adicionado à biblioteca.');
+      } catch(error) { toast(error.message); }
+    });
+    $('#saveProgress').addEventListener('click', async () => {
+      try { const result = await api(`/api/episodes/${encodeURIComponent(state.selectedEpisode.id)}/progress`,{method:'POST',body:JSON.stringify({status:$('#progressSelect').value,note:$('#progressNote').value})}); state.selectedEpisode.progress[state.me.id] = result.progress; renderEpisodeMembers(state.selectedEpisode); await refresh(); toast('Seu progresso foi atualizado.'); }
+      catch(error) { toast(error.message); }
+    });
+    $('#commentForm').addEventListener('submit', async event => {
+      event.preventDefault(); const form = event.currentTarget;
+      try {
+        const result = await api(`/api/episodes/${encodeURIComponent(state.selectedEpisode.id)}/comments`,{method:'POST',body:JSON.stringify({text:form.elements.text.value,mentions:[...$('#mentionSelect').selectedOptions].map(option => option.value)})});
+        state.selectedEpisode.comments = result.comments; form.reset(); renderComments(state.selectedEpisode); toast('Comentário publicado.');
+      } catch(error) { toast(error.message); }
+    });
+    $('#profileForm').addEventListener('submit', async event => {
+      event.preventDefault(); const form = new FormData(event.currentTarget);
+      try {
+        const avatar = await fileData(form.get('avatar'));
+        const updated = await api('/api/profile',{method:'POST',body:JSON.stringify({display_name:form.get('display_name'),bio:form.get('bio'),avatar,current_password:form.get('current_password'),new_password:form.get('new_password')})});
+        state.me = updated.me; state.users = state.users.map(user => user.id === state.me.id ? state.me : user); $('#topName').textContent = state.me.display_name; $('#topAvatar').outerHTML = avatarHtml(state.me,'avatar').replace('class="avatar"','id="topAvatar" class="avatar"'); renderProfilePopover(); hideModal('profileModal'); render(); toast('Perfil atualizado.');
+      } catch(error) { toast(error.message); }
+    });
+    $('#searchInput').addEventListener('input', renderEpisodes);
+    $('#filterSelect').addEventListener('change', renderEpisodes);
+    $$('.nav-link').forEach(link => link.addEventListener('click', () => setView(link.dataset.view)));
+    state.carouselTimer = setInterval(() => {
+      const carousel = $('#homeDramaCarousel');
+      if (!state.me || document.hidden || carousel.scrollWidth <= carousel.clientWidth) return;
+      const card = $('.home-drama-card', carousel);
+      if (!card) return;
+      const gap = Number.parseFloat(getComputedStyle(carousel).columnGap) || 0;
+      const nextPosition = carousel.scrollLeft + card.getBoundingClientRect().width + gap;
+      carousel.scrollTo({left:nextPosition >= carousel.scrollWidth - carousel.clientWidth - 4 ? 0 : nextPosition,behavior:'smooth'});
+    }, 5000);
+    setInterval(() => { if (state.me) refresh().catch(error => toast(error.message)); }, 15000);
+    applyTheme(document.documentElement.dataset.theme);
+    api('/api/me').then(result => result.me ? refresh() : null).catch(error => toast(error.message || 'Não foi possível conectar ao servidor.')).then(() => { if (!state.me) $('#authScreen').classList.remove('hidden'); });
+  </script>
+</body>
+</html>
