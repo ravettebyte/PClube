@@ -34,22 +34,15 @@
       <button id="authThemeToggle" class="theme-toggle auth-theme-toggle" type="button" aria-label="Ativar tema claro" title="Ativar tema claro">☼</button>
       <div class="auth-box">
         <div class="brand mobile-brand"><img class="brand-logo" src="/IMAGENS/logo.png" alt=""><span class="brand-name">clube<span class="brand-light">.</span></span></div>
-        <div class="auth-tabs"><button class="auth-tab active" data-auth="login">Entrar</button><button class="auth-tab" data-auth="register">Criar conta</button></div>
         <form id="loginForm" class="auth-form">
           <h2>Que bom ter você de volta</h2><p>Acesse sua conta para continuar de onde parou.</p>
           <label>Usuário<input name="username" autocomplete="username" placeholder="Seu nome de usuário" required></label>
           <label>Senha<input name="password" type="password" autocomplete="current-password" placeholder="Sua senha" required></label>
           <button class="button primary full" type="submit">Entrar na biblioteca <span>→</span></button>
         </form>
-        <form id="registerForm" class="auth-form hidden">
-          <h2>Seu lugar no clube</h2><p>Crie seu acesso e acompanhe o que o grupo está assistindo.</p>
-          <label>Nome de exibição<input name="display_name" maxlength="50" placeholder="Como quer aparecer?" required></label>
-          <label>Usuário<input name="username" minlength="3" maxlength="24" autocomplete="username" placeholder="Sem espaços" required></label>
-          <label>Senha<input name="password" type="password" minlength="10" autocomplete="new-password" placeholder="Pelo menos 10 caracteres" required></label>
-          <button class="button primary full" type="submit">Criar minha conta <span>→</span></button>
-        </form>
         <div class="auth-foot">Suas histórias, seu ritmo. <span>✦</span></div>
       </div>
+      
     </div>
   </section>
 
@@ -63,8 +56,12 @@
     <main>
       <section id="libraryView">
         <section class="hero">
+          <div id="heroTeaserMedia" class="hero-background-media" aria-hidden="true"></div>
           <div class="hero-copy"><span class="eyebrow"><i></i> UM CLUBE, MUITAS HISTÓRIAS</span><h1>O que vamos<br><em>assistir juntos?</em></h1><p>Descubra os episódios do grupo, deixe sua marca e acompanhe a jornada de cada pessoa.</p><button id="heroAddButton" class="button hero-button">Adicionar episódio <span>→</span></button></div>
-          <div class="hero-art"><div class="hero-glow"></div><div class="hero-poster poster-back"></div><div class="hero-poster poster-front"><span>PLAY</span><div class="poster-caption">A próxima história<br>é nossa.</div></div><div class="floating-note">✦ <span>seu grupo<br>está aqui</span></div></div>
+          <div class="hero-featured-content">
+            <button id="heroFeaturedButton" class="hero-cover-button" type="button" aria-label="Abrir dorama recomendado"><img id="heroDramaCover" class="hero-featured-cover hidden" alt=""></button>
+            <aside class="hero-comment-pop" aria-live="polite"><span class="featured-kicker">COMENTÁRIO DO CLUBE</span><h2 id="heroFeaturedTitle">Dorama recomendado</h2><blockquote id="heroFeaturedComment">Ainda não há comentários.</blockquote><p id="heroFeaturedAuthor"></p></aside>
+          </div>
         </section>
 
         <section class="home-drama-section" aria-label="Doramas em destaque">
@@ -89,6 +86,10 @@
 
       <section id="membersView" class="members-view hidden">
         <div class="section-heading members-heading"><div><span class="eyebrow">CADA UM NO SEU RITMO</span><h1>O nosso grupo</h1><p>Acompanhe onde cada pessoa está em cada episódio.</p></div><div class="member-total"><strong id="membersTotal">0</strong><span>pessoas no clube</span></div></div>
+        <section class="analytics-grid" aria-label="Estatísticas do grupo">
+          <article class="analytics-panel"><div class="analytics-panel-heading"><div class="analytics-heading"><span class="eyebrow">PROGRESSO COLETIVO</span><h2>Ritmo do grupo</h2><p id="groupProgressSummary">Distribuição do progresso dos membros.</p></div><div class="chart-mode" role="group" aria-label="Tipo de gráfico do progresso do grupo"><button class="active" type="button" data-chart-type="bar" data-chart-target="groupProgressChart" aria-pressed="true">Barras</button><button type="button" data-chart-type="pie" data-chart-target="groupProgressChart" aria-pressed="false">Pizza</button></div></div><div id="groupProgressChart" class="data-chart"></div></article>
+          <article class="analytics-panel"><div class="analytics-panel-heading"><div class="analytics-heading"><span class="eyebrow">PARTICIPAÇÃO</span><h2>Conteúdo por membro</h2><p>Episódios adicionados à biblioteca.</p></div><div class="chart-mode" role="group" aria-label="Tipo de gráfico de participação"><button class="active" type="button" data-chart-type="bar" data-chart-target="groupContributionsChart" aria-pressed="true">Barras</button><button type="button" data-chart-type="pie" data-chart-target="groupContributionsChart" aria-pressed="false">Pizza</button></div></div><div id="groupContributionsChart" class="data-chart"></div></article>
+        </section>
         <section class="recommendations-panel">
           <div class="recommendations-header"><div><span class="eyebrow">NOTIFICAÇÕES</span><h2>Recomendações</h2></div></div>
           <div id="recommendationList" class="recommendation-list"></div>
@@ -112,10 +113,20 @@
             <article class="profile-overview-card"><span class="profile-overview-icon watching-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m10 8.5 5.5 3.5-5.5 3.5z" class="icon-play"></path></svg></span><div><strong id="profileWatchingCount">0</strong><span>Assistindo agora</span></div></article>
             <article class="profile-overview-card"><span class="profile-overview-icon completed-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.25 2.6 2.6L16.5 9"></path></svg></span><div><strong id="profileDoneCount">0</strong><span>Episódios concluídos</span></div></article>
           </section>
+          <section class="analytics-panel profile-statistics" aria-label="Estatísticas pessoais">
+            <div class="analytics-panel-heading"><div class="analytics-heading"><span class="eyebrow">SEU HISTÓRICO</span><h2>Meu progresso</h2><p id="profileProgressSummary">Seu ritmo na biblioteca do clube.</p></div><div class="chart-mode" role="group" aria-label="Tipo de gráfico do meu progresso"><button class="active" type="button" data-chart-type="bar" data-chart-target="profileProgressChart" aria-pressed="true">Barras</button><button type="button" data-chart-type="pie" data-chart-target="profileProgressChart" aria-pressed="false">Pizza</button></div></div>
+            <div id="profileProgressChart" class="data-chart"></div>
+            <div id="profileActivityStats" class="profile-activity-stats"></div>
+          </section>
           <section class="profile-recent-section">
             <div><span class="eyebrow">CONTINUE DE ONDE PAROU</span><h2>Recentes</h2><p>Os últimos episódios que você abriu, do mais recente ao anterior.</p></div>
             <div id="profileRecentEpisodes" class="profile-recent-list"></div>
             <p id="profileRecentEmpty" class="profile-recent-empty hidden">Os episódios que você abrir aparecerão aqui.</p>
+          </section>
+          <section class="profile-comments-section">
+            <div><span class="eyebrow">SUA CONVERSA</span><h2>Comentários que fiz</h2><p>Comentários em episódios e doramas; selecione um para abrir a conversa.</p></div>
+            <div id="profileCommentsList" class="profile-comments-list"></div>
+            <p id="profileCommentsEmpty" class="profile-comments-empty hidden">Você ainda não comentou em episódios ou doramas.</p>
           </section>
           <section class="profile-favorites-section">
             <div><span class="eyebrow">SUAS HISTÓRIAS</span><h2>Doramas favoritos</h2><p>Os doramas que você favoritou ficam guardados aqui.</p></div>
@@ -152,6 +163,13 @@
     </section>
   </div>
 
+  <div id="memberProfileModal" class="modal-backdrop hidden">
+    <section class="modal member-profile-modal" role="dialog" aria-modal="true" aria-labelledby="memberProfileTitle">
+      <button class="modal-close" data-close="memberProfileModal" aria-label="Fechar">×</button>
+      <div id="memberProfileContent"></div>
+    </section>
+  </div>
+
   <div id="episodeModal" class="modal-backdrop hidden">
     <section class="modal episode-modal" role="dialog" aria-modal="true" aria-labelledby="episodeTitle">
       <button class="modal-close" data-close="episodeModal" aria-label="Fechar">×</button>
@@ -159,9 +177,10 @@
       <div class="episode-detail">
         <div class="episode-main">
           <span id="episodeMeta" class="eyebrow"></span><h2 id="episodeTitle"></h2><p id="episodeDescription" class="episode-description"></p><a id="externalVideoLink" class="external-video-link hidden" href="#" target="_blank" rel="noopener noreferrer">Abrir vídeo no YouTube ↗</a>
+          <div class="episode-action-row"><button id="editEpisodeButton" class="button compact" type="button">Editar episódio</button><button id="deleteEpisodeButton" class="button danger compact" type="button">Excluir episódio</button></div>
           <div class="progress-control"><label for="progressSelect">Meu progresso</label><select id="progressSelect"><option value="new">Não comecei</option><option value="watching">Assistindo</option><option value="done">Concluído</option></select><input id="progressNote" maxlength="120" placeholder="Onde parei? (ex.: 18 min)" aria-label="Anotação do progresso"><button id="saveProgress" class="button primary compact">Salvar</button></div>
           <div class="comments-heading"><div><span class="eyebrow">CONVERSA DO CLUBE</span><h3>Comentários <span id="commentCount">0</span></h3></div></div>
-          <form id="commentForm" class="comment-form"><textarea name="text" maxlength="1000" placeholder="O que você achou deste episódio?" required></textarea><div class="comment-actions"><label>Marcar <select name="mentions" id="mentionSelect" multiple aria-label="Marcar membros"></select></label><button class="button primary compact" type="submit">Comentar <span>→</span></button></div><small>Use Ctrl ou ⌘ para marcar mais de uma pessoa.</small></form>
+          <form id="commentForm" class="comment-form"><div class="comment-composer"><textarea id="commentText" name="text" maxlength="1000" placeholder="O que você achou deste episódio? Digite @ para mencionar alguém" aria-autocomplete="list" aria-controls="mentionSuggestions" required></textarea><div id="mentionSuggestions" class="mention-suggestions hidden" role="listbox" aria-label="Membros para mencionar"></div></div><div class="comment-actions"><button class="button primary compact" type="submit">Comentar <span>→</span></button></div></form>
           <div id="commentList" class="comment-list"></div>
         </div>
         <aside class="episode-aside"><div class="aside-label">PROGRESSO DO GRUPO</div><div id="episodeMembers" class="episode-members"></div></aside>
@@ -173,12 +192,13 @@
     <section class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="addTitle"><button class="modal-close" data-close="addModal" aria-label="Fechar">×</button><span class="eyebrow">UMA NOVA HISTÓRIA</span><h2 id="addTitle">Adicionar episódio</h2><p class="modal-intro">Use o mesmo nome do dorama para guardar os episódios juntos no mesmo bloco.</p>
       <form id="episodeForm" class="modal-form">
         <label>Nome do dorama<input name="series" maxlength="80" placeholder="Ex.: Uma história incrível" required></label>
+        <label>Categoria do bloco<select name="display_label"><option value="">Usar nome do dorama</option><option value="Girls Lovers">Girls Lovers</option><option value="Boys Lovers">Boys Lovers</option></select></label>
         <div class="form-row"><label>Temporada<input name="season" type="number" min="1" max="999" value="1" required></label><label>Episódio<input name="episode" type="number" min="1" max="9999" value="1" required></label></div>
         <label>Título do episódio<input name="title" maxlength="120" placeholder="Ex.: O começo de tudo" required></label>
         <label>Link para assistir <span class="label-hint">YouTube, Shorts, transmissões ao vivo ou link direto .mp4/.webm/.ogg</span><input name="video_url" type="url" placeholder="https://youtu.be/... ou youtube.com/shorts/..." required></label>
         <label>Descrição<textarea name="description" maxlength="2000" rows="3" placeholder="Do que se trata este episódio?"></textarea></label>
         <label>Capa do episódio <span class="label-hint">Opcional · a primeira capa enviada também será a capa do dorama</span><input name="cover" type="file" accept="image/png,image/jpeg,image/webp"></label>
-        <button class="button primary full" type="submit">Adicionar à biblioteca <span>→</span></button>
+        <button id="episodeSubmitButton" class="button primary full" type="submit">Adicionar à biblioteca <span>→</span></button>
       </form>
     </section>
   </div>
@@ -186,6 +206,7 @@
   <div id="profileModal" class="modal-backdrop hidden">
     <section class="modal form-modal profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle"><button class="modal-close" data-close="profileModal" aria-label="Fechar">×</button><span class="eyebrow">SEU ESPAÇO NO CLUBE</span><h2 id="profileTitle">Seu perfil</h2>
       <form id="profileForm" class="modal-form">
+        <label>Nome de usuário<input name="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_.-]{3,24}" autocomplete="username" placeholder="Sem espaços" required></label>
         <label>Nome de exibição<input name="display_name" maxlength="50" required></label>
         <label>Sobre mim<textarea name="bio" maxlength="280" rows="3" placeholder="Uma frase sobre você"></textarea></label>
         <label>Foto de perfil <span class="label-hint">JPG, PNG ou WebP · até 3 MB</span><input name="avatar" type="file" accept="image/png,image/jpeg,image/webp"></label>
@@ -198,7 +219,7 @@
   </div>
 
   <script>
-    const state = { me: null, episodes: [], users: [], series: {}, recommendations: [], selectedEpisode: null, selectedSeriesKey: null, toastTimer: null, carouselTimer: null, carouselSignature: '' };
+    const state = { me: null, episodes: [], users: [], series: {}, recommendations: [], selectedEpisode: null, selectedSeriesKey: null, selectedMemberId: null, chartModes: {}, toastTimer: null, carouselTimer: null, heroTimer: null, heroCommentTimer: null, heroPlaybackWatchdog: null, youtubeApiPromise: null, featuredPlayer: null, carouselSignature: '', featuredSeriesKey: null, featuredRosterSignature: '', featuredDramaCount: 0, featuredRotationIndex: 0, featuredClipIndex: 0, featuredPreviewSignature: '', featuredClipStart: 0, featuredEpisodeId: null, featuredUnavailableEpisodes: new Set(), featuredComments: [], featuredCommentIndex: 0 };
     const $ = (selector, root = document) => root.querySelector(selector);
     const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
     const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -230,11 +251,6 @@
       if (!response.ok) throw new Error(body.error || 'Não foi possível completar esta ação.');
       return body;
     }
-    function authMode(mode) {
-      $$('.auth-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.auth === mode));
-      $('#loginForm').classList.toggle('hidden', mode !== 'login');
-      $('#registerForm').classList.toggle('hidden', mode !== 'register');
-    }
     async function refresh() {
       const data = await api('/api/data'); state.me = data.me; state.episodes = data.episodes; state.users = data.users; state.series = data.series || {}; state.recommendations = Array.isArray(data.recommendations) ? data.recommendations : [];
       $('#authScreen').classList.add('hidden'); $('#app').classList.remove('hidden');
@@ -250,7 +266,7 @@
       render();
     }
     function render() {
-      renderStats(); renderEpisodes(); renderHomeDramaCarousel(); renderMembers(); renderProfilePage(); setRecommendationOptions(); renderRecommendations(); renderNotificationBell();
+      renderStats(); renderEpisodes(); renderHomeDramaCarousel(); renderFeaturedDrama(); renderGroupStatistics(); renderMembers(); renderProfilePage(); renderProfileStatistics(); setRecommendationOptions(); renderRecommendations(); renderNotificationBell();
       if (state.selectedSeriesKey && !$('#dramaModal').classList.contains('hidden')) renderDramaModal(state.selectedSeriesKey);
     }
     function renderHomeDramaCarousel() {
@@ -281,6 +297,321 @@
       $$('.carousel-arrow').forEach(button => { button.disabled = dramas.length < 2; });
       state.carouselSignature = signature;
       carousel.scrollLeft = previousScroll;
+    }
+    function renderFeaturedDrama() {
+      const grouped = new Map();
+      state.episodes.forEach(episode => {
+        const key = episode.series.trim().toLocaleLowerCase('pt-BR');
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(episode);
+      });
+      const dramas = [...grouped.entries()].map(([key, episodes]) => {
+        const info = state.series[key] || {};
+        const ratings = Object.values(info.ratings || {}).map(Number).filter(Number.isFinite);
+        const comments = [
+          ...(info.comments || []),
+          ...episodes.flatMap(episode => episode.comments || []),
+        ];
+        return { key, series: episodes[0].series, episodes, ratings, comments, cover: episodes.find(episode => episode.cover)?.cover || '' };
+      }).sort((a, b) => {
+        const averageA = a.ratings.length ? a.ratings.reduce((sum, value) => sum + value, 0) / a.ratings.length : 0;
+        const averageB = b.ratings.length ? b.ratings.reduce((sum, value) => sum + value, 0) / b.ratings.length : 0;
+        return averageB - averageA || b.comments.length - a.comments.length || b.episodes.length - a.episodes.length;
+      });
+      const rosterSignature = dramas.map(drama => drama.key).join('|');
+      if (rosterSignature !== state.featuredRosterSignature) {
+        state.featuredRosterSignature = rosterSignature;
+        state.featuredDramaCount = dramas.length;
+        state.featuredRotationIndex = 0;
+        state.featuredClipIndex = 0;
+        state.featuredCommentIndex = 0;
+        state.featuredUnavailableEpisodes.clear();
+      }
+      let featured = dramas.length ? dramas[state.featuredRotationIndex % dramas.length] : null;
+      let playableEpisodes = featured?.episodes.filter(episode => safeVideo(episode.video_url) && !state.featuredUnavailableEpisodes.has(episode.id)) || [];
+      if (featured && !playableEpisodes.length) {
+        const fallbackIndex = dramas.findIndex(drama => drama.episodes.some(episode => safeVideo(episode.video_url) && !state.featuredUnavailableEpisodes.has(episode.id)));
+        if (fallbackIndex >= 0) {
+          state.featuredRotationIndex = fallbackIndex;
+          state.featuredClipIndex = 0;
+          featured = dramas[fallbackIndex];
+          playableEpisodes = featured.episodes.filter(episode => safeVideo(episode.video_url) && !state.featuredUnavailableEpisodes.has(episode.id));
+        }
+      }
+      const teaserMedia = $('#heroTeaserMedia');
+      const coverImage = $('#heroDramaCover');
+      if (!featured) {
+        state.featuredSeriesKey = null;
+        state.featuredEpisodeId = null;
+        state.featuredPreviewSignature = '';
+        state.featuredComments = [];
+        clearTimeout(state.heroPlaybackWatchdog);
+        state.featuredPlayer?.destroy();
+        state.featuredPlayer = null;
+        teaserMedia.replaceChildren();
+        teaserMedia.style.backgroundImage = '';
+        coverImage.removeAttribute('src');
+        coverImage.classList.add('hidden');
+        $('#heroFeaturedButton').disabled = true;
+        $('#heroFeaturedTitle').textContent = 'Nenhum dorama na biblioteca';
+        $('#heroFeaturedComment').textContent = 'Ainda não há comentários.';
+        $('#heroFeaturedAuthor').textContent = 'Adicione um dorama para começar.';
+        return;
+      }
+      state.featuredSeriesKey = featured.key;
+      state.featuredComments = [...featured.comments].sort((a, b) => Number(b.created) - Number(a.created));
+      if (state.featuredCommentIndex >= state.featuredComments.length) state.featuredCommentIndex = 0;
+      $('#heroFeaturedButton').disabled = false;
+      $('#heroFeaturedButton').setAttribute('aria-label', `Abrir ${featured.series}`);
+      $('#heroFeaturedTitle').textContent = featured.series;
+      renderFeaturedComment();
+      const teaserEpisode = playableEpisodes.length ? playableEpisodes[state.featuredClipIndex % playableEpisodes.length] : null;
+      state.featuredEpisodeId = teaserEpisode?.id || null;
+      teaserMedia.style.backgroundImage = !teaserEpisode && featured.cover
+        ? `linear-gradient(#100d1880,#100d1880),url("${featured.cover}")`
+        : '';
+      const previewSignature = `${featured.key}|${teaserEpisode?.id || ''}`;
+      if (featured.cover) {
+        if (coverImage.getAttribute('src') !== featured.cover) coverImage.src = featured.cover;
+        coverImage.classList.remove('hidden');
+        coverImage.alt = `Capa de ${featured.series}`;
+      } else {
+        coverImage.removeAttribute('src');
+        coverImage.classList.add('hidden');
+      }
+      if (previewSignature !== state.featuredPreviewSignature) {
+        state.featuredPreviewSignature = previewSignature;
+        clearTimeout(state.heroPlaybackWatchdog);
+        state.featuredPlayer?.destroy();
+        state.featuredPlayer = null;
+        teaserMedia.replaceChildren();
+        if (teaserEpisode) {
+          const video = safeVideo(teaserEpisode.video_url, true, false, 8);
+          state.featuredClipStart = video?.segmentStart || 0;
+          if (video?.type === 'youtube') {
+            const playerHost = document.createElement('div');
+            playerHost.className = 'hero-youtube-player';
+            teaserMedia.append(playerHost);
+            createHeroPlayer(playerHost, video.src, teaserEpisode.id, teaserEpisode.title);
+          } else if (video?.type === 'direct') {
+            const player = document.createElement('video');
+            player.src = video.src;
+            player.muted = true;
+            player.autoplay = true;
+            player.loop = true;
+            player.playsInline = true;
+            player.disablePictureInPicture = true;
+            player.tabIndex = -1;
+            player.setAttribute('aria-hidden', 'true');
+            player.addEventListener('timeupdate', () => {
+              if (player.currentTime >= 8) {
+                player.currentTime = 0;
+                player.play().catch(() => {});
+              }
+            });
+            teaserMedia.append(player);
+            player.play().catch(() => {});
+          }
+        }
+      }
+    }
+    function renderFeaturedComment() {
+      const comment = state.featuredComments[state.featuredCommentIndex] || null;
+      if (!comment) {
+        $('#heroFeaturedComment').textContent = 'Ainda não há comentários sobre este dorama.';
+        $('#heroFeaturedAuthor').textContent = 'Seja a primeira pessoa a comentar.';
+        return;
+      }
+      const author = state.users.find(user => user.id === comment.user_id);
+      $('#heroFeaturedComment').textContent = `“${comment.text}”`;
+      $('#heroFeaturedAuthor').textContent = author ? `Por ${author.display_name}` : 'Comentário do clube';
+    }
+    function loadYouTubePlayerAPI() {
+      if (window.YT?.Player) return Promise.resolve(window.YT);
+      if (state.youtubeApiPromise) return state.youtubeApiPromise;
+      state.youtubeApiPromise = new Promise((resolve, reject) => {
+        const previousReady = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = () => {
+          if (typeof previousReady === 'function') previousReady();
+          resolve(window.YT);
+        };
+        const script = document.createElement('script');
+        script.src = 'https://www.youtube.com/iframe_api';
+        script.async = true;
+        script.onerror = () => reject(new Error('Não foi possível carregar o player do YouTube.'));
+        document.head.append(script);
+      }).catch(error => {
+        state.youtubeApiPromise = null;
+        throw error;
+      });
+      return state.youtubeApiPromise;
+    }
+    function createHeroPlayer(host, source, episodeId, title) {
+      const videoUrl = new URL(source);
+      const videoId = videoUrl.pathname.split('/').filter(Boolean).pop();
+      const playerVars = Object.fromEntries(videoUrl.searchParams.entries());
+      loadYouTubePlayerAPI().then(YT => {
+        if (!host.isConnected || episodeId !== state.featuredEpisodeId) return;
+        host.id = 'hero-youtube-player';
+        state.featuredPlayer = new YT.Player(host.id, {
+          width:'100%',
+          height:'100%',
+          videoId,
+          playerVars,
+          events: {
+            onReady(event) {
+              if (episodeId !== state.featuredEpisodeId) return event.target.destroy();
+              const iframe = event.target.getIframe();
+              iframe.title = `Trecho sem som de ${title}`;
+              iframe.allow = 'autoplay; encrypted-media';
+              iframe.tabIndex = -1;
+              iframe.setAttribute('aria-hidden', 'true');
+              event.target.mute();
+              event.target.setVolume(0);
+              event.target.setPlaybackQuality('small');
+              event.target.seekTo(state.featuredClipStart, true);
+              event.target.playVideo();
+              state.heroPlaybackWatchdog = setTimeout(() => {
+                const playerState = event.target.getPlayerState();
+                if (episodeId === state.featuredEpisodeId && event.target.getCurrentTime() < 0.5
+                    && playerState !== YT.PlayerState.PLAYING && playerState !== YT.PlayerState.ENDED) {
+                  handleHeroPlayerError(episodeId);
+                }
+              }, 12000);
+            },
+            onStateChange(event) {
+              if (episodeId !== state.featuredEpisodeId) return;
+              if (event.data === YT.PlayerState.PLAYING) clearTimeout(state.heroPlaybackWatchdog);
+              if (event.data === YT.PlayerState.ENDED) {
+                event.target.seekTo(state.featuredClipStart, true);
+                event.target.playVideo();
+              }
+            },
+            onError() { handleHeroPlayerError(episodeId); },
+          },
+        });
+      }).catch(() => {
+        if (!host.isConnected || episodeId !== state.featuredEpisodeId) return;
+        const iframe = document.createElement('iframe');
+        iframe.src = source;
+        iframe.title = `Trecho sem som de ${title}`;
+        iframe.allow = 'autoplay; encrypted-media';
+        iframe.tabIndex = -1;
+        iframe.setAttribute('aria-hidden', 'true');
+        host.replaceChildren(iframe);
+      });
+    }
+    function handleHeroPlayerError(episodeId) {
+      if (episodeId !== state.featuredEpisodeId || !episodeId) return;
+      clearTimeout(state.heroPlaybackWatchdog);
+      state.featuredUnavailableEpisodes.add(episodeId);
+      state.featuredPlayer?.destroy();
+      state.featuredPlayer = null;
+      state.featuredRotationIndex = (state.featuredRotationIndex + 1) % Math.max(1, state.featuredDramaCount);
+      state.featuredClipIndex = 0;
+      renderFeaturedDrama();
+    }
+    function renderBarChart(selector, rows) {
+      const chart = $(selector);
+      const mode = state.chartModes[selector] || 'bar';
+      chart.className = `data-chart ${mode}`;
+      if (mode === 'pie') {
+        const colors = ['#d6ab52','#71b5d1','#70bd99','#dc8d8d','#9386bd','#cb82b8','#84a1da','#c8875e','#6bb9ac','#b1a35a'];
+        const total = rows.reduce((sum, row) => sum + Math.max(0, Number(row.value) || 0), 0);
+        let angle = 0;
+        const slices = rows.map((row, index) => {
+          const amount = Math.max(0, Number(row.value) || 0);
+          const start = angle;
+          angle += total ? amount / total * 360 : 0;
+          return {row, amount, start, end:angle, color:colors[index % colors.length]};
+        });
+        const gradient = total ? slices.map(slice => `${slice.color} ${slice.start}deg ${slice.end}deg`).join(',') : 'var(--line) 0deg 360deg';
+        chart.innerHTML = `<div class="pie-chart-layout"><div class="pie-chart" role="img" aria-label="Gráfico de pizza: ${slices.map(({row,amount}) => `${escapeHtml(row.label)} ${amount}`).join(', ')}" style="background:conic-gradient(${gradient})"><span>${total}</span></div><ul class="chart-legend">${slices.map(({row,amount,color}) => `<li><i style="--legend-color:${color}"></i><span>${escapeHtml(row.label)}</span><strong>${amount}${total ? ` · ${Math.round(amount / total * 100)}%` : ''}</strong></li>`).join('')}</ul></div>`;
+        return;
+      }
+      const maximum = Math.max(1, ...rows.map(row => Number(row.value) || 0));
+      chart.innerHTML = rows.map(row => {
+        const value = Math.max(0, Number(row.value) || 0);
+        const percent = Math.round(value / maximum * 100);
+        return `<div class="chart-row"><span class="chart-label">${escapeHtml(row.label)}</span><span class="chart-track" role="progressbar" aria-label="${escapeHtml(row.label)}" aria-valuemin="0" aria-valuemax="${maximum}" aria-valuenow="${value}"><span class="chart-fill ${escapeHtml(row.tone || '')}" style="width:${percent}%"></span></span><strong>${value}</strong></div>`;
+      }).join('');
+    }
+    function renderGroupStatistics() {
+      if (!state.me) return;
+      const counts = {watching:0,done:0,new:0};
+      state.episodes.forEach(episode => state.users.forEach(user => {
+        const status = (episode.progress[user.id] || {}).status;
+        counts[status in counts ? status : 'new']++;
+      }));
+      renderBarChart('#groupProgressChart', [
+        {label:'Assistindo',value:counts.watching,tone:'watching'},
+        {label:'Concluídos',value:counts.done,tone:'done'},
+        {label:'Não começaram',value:counts.new,tone:'new'},
+      ]);
+      const onlineCount = state.users.filter(user => user.online).length;
+      $('#groupProgressSummary').textContent = `${onlineCount} ${onlineCount === 1 ? 'pessoa online' : 'pessoas online'} · ${state.episodes.length * state.users.length} acompanhamentos possíveis`;
+      const contributions = state.users.map(user => ({
+        label:user.id === state.me.id ? 'Você' : user.display_name,
+        value:state.episodes.filter(episode => episode.added_by === user.id).length,
+        tone:'member',
+      })).sort((a, b) => b.value - a.value || a.label.localeCompare(b.label, 'pt-BR'));
+      renderBarChart('#groupContributionsChart', contributions);
+    }
+    function renderProfileStatistics() {
+      if (!state.me) return;
+      const mine = state.episodes.map(episode => (episode.progress[state.me.id] || {}).status || 'new');
+      const counts = {watching:mine.filter(status => status === 'watching').length,done:mine.filter(status => status === 'done').length,new:mine.filter(status => status === 'new').length};
+      renderBarChart('#profileProgressChart', [
+        {label:'Assistindo',value:counts.watching,tone:'watching'},
+        {label:'Concluídos',value:counts.done,tone:'done'},
+        {label:'Não comecei',value:counts.new,tone:'new'},
+      ]);
+      const completion = mine.length ? Math.round(counts.done / mine.length * 100) : 0;
+      $('#profileProgressSummary').textContent = `${completion}% concluído · ${mine.length} ${mine.length === 1 ? 'episódio acompanhado' : 'episódios acompanhados'}`;
+      const episodeComments = state.episodes.flatMap(episode => episode.comments || []);
+      const dramaComments = Object.values(state.series).flatMap(info => info.comments || []);
+      const commentCount = [...episodeComments, ...dramaComments].filter(comment => comment.user_id === state.me.id).length;
+      const favoriteCount = Object.values(state.series).filter(info => (info.favorites || {})[state.me.id]).length;
+      const recommendationCount = state.recommendations.filter(item => item.from_user_id === state.me.id).length;
+      $('#profileActivityStats').innerHTML = `<div><strong>${commentCount}</strong><span>comentários</span></div><div><strong>${favoriteCount}</strong><span>favoritos</span></div><div><strong>${recommendationCount}</strong><span>recomendações enviadas</span></div>`;
+    }
+    function commentsByUser(userId) {
+      const entries = [];
+      state.episodes.forEach(episode => (episode.comments || []).forEach(comment => {
+        if (comment.user_id !== userId) return;
+        const key = episode.series.trim().toLocaleLowerCase('pt-BR');
+        const label = state.series[key]?.display_label || episode.series;
+        entries.push({
+          comment,
+          type:'episode',
+          target:episode.id,
+          title:label === episode.series ? episode.series : `${label} · ${episode.series}`,
+          context:`Episódio ${episode.season}×${episode.episode_number} · ${episode.title}`,
+        });
+      }));
+      Object.entries(state.series).forEach(([key, info]) => (info.comments || []).forEach(comment => {
+        if (comment.user_id !== userId) return;
+        const episode = state.episodes.find(item => item.series.trim().toLocaleLowerCase('pt-BR') === key);
+        entries.push({
+          comment,
+          type:'drama',
+          target:key,
+          title:info.display_label || episode?.series || key,
+          context:'Comentário do dorama',
+        });
+      }));
+      return entries.sort((a, b) => Number(b.comment.created) - Number(a.comment.created));
+    }
+    function commentHistoryHtml(entries) {
+      return entries.map(entry => `<button class="profile-comment-entry" type="button" data-comment-type="${entry.type}" data-comment-target="${escapeHtml(entry.target)}"><span class="profile-comment-heading"><span class="profile-comment-type">${entry.type === 'episode' ? 'EPISÓDIO' : 'DORAMA'}</span><strong>${escapeHtml(entry.title)}</strong><time>${new Date(Number(entry.comment.created)).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}</time></span><span class="profile-comment-context">${escapeHtml(entry.context)}</span><span class="profile-comment-text">${commentMentionHtml(entry.comment.text, entry.comment.mentions || [])}</span></button>`).join('');
+    }
+    function openCommentTarget(type, target) {
+      if (type === 'episode') {
+        state.selectedSeriesKey = null;
+        openEpisode(target);
+      } else {
+        openDrama(target);
+      }
     }
     function renderProfilePopover() {
       if (!state.me) return;
@@ -320,6 +651,9 @@
           <span class="profile-recent-play" aria-hidden="true">▶</span>
         </button>`).join('');
       $('#profileRecentEmpty').classList.toggle('hidden', recentEpisodes.length > 0);
+      const ownComments = commentsByUser(state.me.id);
+      $('#profileCommentsList').innerHTML = commentHistoryHtml(ownComments);
+      $('#profileCommentsEmpty').classList.toggle('hidden', ownComments.length > 0);
     }
     function setView(view) {
       const views = {library:'#libraryView',members:'#membersView',profile:'#profileView'};
@@ -335,6 +669,7 @@
       $('#profilePopover').classList.add('hidden');
       $('#profileButton').setAttribute('aria-expanded', 'false');
       const form = $('#profileForm');
+      form.elements.username.value = state.me.username;
       form.elements.display_name.value = state.me.display_name;
       form.elements.bio.value = state.me.bio || '';
       form.elements.avatar.value = '';
@@ -351,17 +686,36 @@
       $('#statMembers').textContent = state.users.length;
       $('#membersTotal').textContent = state.users.length;
     }
-    function openAddEpisode(series = '') {
+    function openAddEpisode(series = '', editingEpisode = null) {
       const form = $('#episodeForm');
+      const modalTitle = $('#addTitle');
+      const submitButton = $('#episodeSubmitButton');
       form.reset();
-      form.elements.series.value = series;
-      if (series) {
-        const existing = state.episodes.filter(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === series.trim().toLocaleLowerCase('pt-BR'));
-        if (existing.length) {
-          const season = Math.max(...existing.map(episode => episode.season));
-          const nextEpisode = Math.max(...existing.filter(episode => episode.season === season).map(episode => episode.episode_number)) + 1;
-          form.elements.season.value = season;
-          form.elements.episode.value = nextEpisode;
+      form.dataset.mode = editingEpisode ? 'edit' : 'create';
+      form.dataset.episodeId = editingEpisode ? editingEpisode.id : '';
+      const labelSeries = editingEpisode?.series || series;
+      const labelKey = labelSeries.trim().toLocaleLowerCase('pt-BR');
+      form.elements.display_label.value = state.series[labelKey]?.display_label || '';
+      modalTitle.textContent = editingEpisode ? 'Editar episódio' : 'Adicionar episódio';
+      submitButton.innerHTML = editingEpisode ? 'Salvar alterações <span>→</span>' : 'Adicionar à biblioteca <span>→</span>';
+      if (editingEpisode) {
+        form.elements.series.value = editingEpisode.series;
+        form.elements.season.value = editingEpisode.season;
+        form.elements.episode.value = editingEpisode.episode_number;
+        form.elements.title.value = editingEpisode.title;
+        form.elements.video_url.value = editingEpisode.video_url;
+        form.elements.description.value = editingEpisode.description || '';
+        form.elements.cover.value = '';
+      } else {
+        form.elements.series.value = series;
+        if (series) {
+          const existing = state.episodes.filter(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === series.trim().toLocaleLowerCase('pt-BR'));
+          if (existing.length) {
+            const season = Math.max(...existing.map(episode => episode.season));
+            const nextEpisode = Math.max(...existing.filter(episode => episode.season === season).map(episode => episode.episode_number)) + 1;
+            form.elements.season.value = season;
+            form.elements.episode.value = nextEpisode;
+          }
         }
       }
       showModal('addModal');
@@ -380,11 +734,12 @@
       });
       $('#episodeGrid').innerHTML = [...groups.entries()].map(([key, episodes]) => {
         const series = episodes[0].series;
+        const displayLabel = state.series[key]?.display_label || series;
         const allSeriesEpisodes = state.episodes.filter(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === series.trim().toLocaleLowerCase('pt-BR'));
         const cover = allSeriesEpisodes.find(episode => episode.cover)?.cover || '';
-        return `<button class="drama-card" type="button" data-drama-key="${escapeHtml(key)}" aria-label="Abrir ${escapeHtml(series)}">
+        return `<button class="drama-card" type="button" data-drama-key="${escapeHtml(key)}" aria-label="Abrir ${escapeHtml(displayLabel)}: ${escapeHtml(series)}">
           <span class="drama-card-cover">${cover ? `<img src="${escapeHtml(cover)}" alt="Capa de ${escapeHtml(series)}">` : '<span aria-hidden="true">✦</span>'}</span>
-          <span class="drama-card-info"><span class="eyebrow">DORAMA</span><strong>${escapeHtml(series)}</strong><span>${allSeriesEpisodes.length} ${allSeriesEpisodes.length === 1 ? 'episódio' : 'episódios'} · Toque para ver</span></span>
+          <span class="drama-card-info"><span class="eyebrow">${escapeHtml(displayLabel === series ? 'DORAMA' : 'CATEGORIA DO BLOCO')}</span><strong>${escapeHtml(displayLabel)}</strong><span>${displayLabel !== series ? `${escapeHtml(series)} · ` : ''}${allSeriesEpisodes.length} ${allSeriesEpisodes.length === 1 ? 'episódio' : 'episódios'} · Toque para ver</span></span>
         </button>`;
       }).join('');
       $('#emptyState').classList.toggle('hidden', state.episodes.length > 0);
@@ -457,7 +812,7 @@
       $('#dramaModalContent').innerHTML = `<header class="drama-modal-header">
         <div id="dramaBackgroundMedia" class="drama-background-media" data-video-url="${escapeHtml(seriesInfo.background_url || '')}">${backgroundMedia}</div>
         <div class="drama-modal-cover">${cover ? `<img src="${escapeHtml(cover)}" alt="Capa de ${escapeHtml(series)}">` : '<span aria-hidden="true">✦</span>'}</div>
-        <div class="drama-modal-info"><span class="eyebrow">DORAMA</span><h2 id="dramaTitle">${escapeHtml(series)}</h2><p>${escapeHtml(description)}</p><div class="drama-stats"><span>${episodes.length} ${episodes.length === 1 ? 'episódio' : 'episódios'}</span><span>▶ ${watching} assistindo</span><span>✓ ${done} concluídos</span></div><div class="drama-modal-actions"><button class="button primary drama-add-button" type="button" data-add-series="${escapeHtml(series)}">＋ Adicionar episódio</button><button class="drama-favorite-button${isFavorite ? ' is-favorite' : ''}" type="button" data-toggle-favorite aria-pressed="${isFavorite}">${isFavorite ? '♥ Favoritado' : '♡ Favoritar'}</button></div></div>
+        <div class="drama-modal-info"><span class="eyebrow">DORAMA</span><h2 id="dramaTitle">${escapeHtml(series)}</h2><p>${escapeHtml(description)}</p><div class="drama-stats"><span>${episodes.length} ${episodes.length === 1 ? 'episódio' : 'episódios'}</span><span>▶ ${watching} assistindo</span><span>✓ ${done} concluídos</span></div><div class="drama-modal-actions"><button class="button primary drama-add-button" type="button" data-add-series="${escapeHtml(series)}">＋ Adicionar episódio</button><button class="button compact" type="button" data-edit-block>Editar bloco</button><button class="button danger compact" type="button" data-delete-block>Excluir bloco</button><button class="drama-favorite-button${isFavorite ? ' is-favorite' : ''}" type="button" data-toggle-favorite aria-pressed="${isFavorite}">${isFavorite ? '♥ Favoritado' : '♡ Favoritar'}</button></div></div>
       </header>
       <section class="drama-community">
         <h3>Gêneros do dorama</h3><div class="genre-tags">${communityGenres}</div>
@@ -501,12 +856,61 @@
       $$('#dramaPreferenceForm input[name="genres"]').forEach(input => { input.disabled = limitReached && !input.checked; });
     }
     function renderMembers() {
-      $('#memberGrid').innerHTML = state.users.filter(user => user.id !== state.me.id).map(user => {
+      $('#memberGrid').innerHTML = state.users.map(user => {
         const watching = state.episodes.filter(ep => (ep.progress[user.id] || {}).status === 'watching');
         const done = state.episodes.filter(ep => (ep.progress[user.id] || {}).status === 'done').length;
         const current = watching[0], name = user.display_name;
-        return `<article class="member-card">${avatarHtml(user, 'member-avatar')}<div class="member-info"><strong>${escapeHtml(name)}</strong><span>@${escapeHtml(user.username)}</span><p>${escapeHtml(user.bio || 'Pronto para a próxima história.')}</p></div><div class="member-progress"><strong>${done}<small> concluídos</small></strong><span>${current ? `Assistindo: ${escapeHtml(current.series)} · T${current.season} E${current.episode_number}${current.note ? ` · ${escapeHtml(current.note)}` : ''}` : 'Sem episódio em andamento'}</span></div><button class="button compact recommend-member-button" type="button" data-recommend-user="${escapeHtml(user.id)}">Recomendar</button></article>`;
+        const online = Boolean(user.online);
+        const isSelf = user.id === state.me.id;
+        return `<article class="member-card${isSelf ? ' is-self' : ''}"><button class="member-avatar-link" type="button" data-view-member="${escapeHtml(user.id)}" aria-label="Ver perfil de ${isSelf ? 'você' : escapeHtml(name)}"><span class="member-avatar-wrap">${avatarHtml(user, 'member-avatar')}<i class="member-presence-dot${online ? ' is-online' : ''}" aria-hidden="true"></i></span></button><div class="member-info"><button class="member-profile-link" type="button" data-view-member="${escapeHtml(user.id)}">${escapeHtml(name)}${isSelf ? ' <span class="member-self-label">Você</span>' : ''}</button><div class="member-identity-meta"><span>@${escapeHtml(user.username)}</span><span class="member-online-status${online ? ' is-online' : ''}"><i aria-hidden="true"></i>${online ? 'Online' : 'Offline'}</span></div><p>${escapeHtml(user.bio || 'Pronto para a próxima história.')}</p></div><div class="member-progress"><strong>${done}<small> concluídos</small></strong><span>${current ? `Assistindo: ${escapeHtml(current.series)} · T${current.season} E${current.episode_number}${current.note ? ` · ${escapeHtml(current.note)}` : ''}` : 'Sem episódio em andamento'}</span></div><button class="button compact recommend-member-button" type="button" data-recommend-user="${escapeHtml(user.id)}">${isSelf ? 'Minhas recomendações' : 'Recomendações'}</button></article>`;
       }).join('');
+    }
+    function renderMemberRecommendationList(items, direction) {
+      if (!items.length) return `<p class="member-recommendations-empty">${direction === 'sent' ? 'Este membro ainda não recomendou doramas.' : 'Este membro ainda não recebeu recomendações.'}</p>`;
+      return [...items].sort((a, b) => Number(b.created) - Number(a.created)).map(item => {
+        const otherId = direction === 'sent' ? item.to_user_id : item.from_user_id;
+        const otherMember = state.users.find(user => user.id === otherId);
+        const seriesKey = String(item.series || '').trim().toLocaleLowerCase('pt-BR');
+        const episode = state.episodes.find(entry => entry.series.trim().toLocaleLowerCase('pt-BR') === seriesKey);
+        const title = episode?.series || item.series;
+        const context = direction === 'sent'
+          ? `Para ${otherMember?.display_name || 'um membro'}`
+          : `Recomendado por ${otherMember?.display_name || 'um membro'}`;
+        return `<button class="member-recommendation-link" type="button" data-member-drama="${escapeHtml(seriesKey)}"><span>${escapeHtml(title)}</span><small>${escapeHtml(context)}</small></button>`;
+      }).join('');
+    }
+    function openMemberProfile(userId) {
+      const user = state.users.find(item => item.id === userId);
+      if (!user) return;
+      state.selectedMemberId = userId;
+      const isSelf = userId === state.me.id;
+      const addedEpisodes = state.episodes.filter(episode => episode.added_by === userId);
+      const watchingEpisodes = state.episodes.filter(episode => (episode.progress[userId] || {}).status === 'watching');
+      const done = state.episodes.filter(episode => (episode.progress[userId] || {}).status === 'done').length;
+      const sent = state.recommendations.filter(item => item.from_user_id === userId);
+      const received = state.recommendations.filter(item => item.to_user_id === userId);
+      const comments = commentsByUser(userId);
+      const commentCount = comments.length;
+      const favorites = Object.entries(state.series).filter(([, info]) => (info.favorites || {})[userId]).map(([key]) => {
+        const episode = state.episodes.find(item => item.series.trim().toLocaleLowerCase('pt-BR') === key);
+        return episode ? {key, title:state.series[key].display_label || episode.series} : null;
+      }).filter(Boolean);
+      const genres = Object.entries(state.series).flatMap(([key, info]) => {
+        const episode = state.episodes.find(item => item.series.trim().toLocaleLowerCase('pt-BR') === key);
+        return (info.genres?.[userId] || []).map(genre => ({series:episode?.series || key, genre}));
+      });
+      const addedList = addedEpisodes.length
+        ? addedEpisodes.slice(0, 5).map(episode => `<li><strong>${escapeHtml(episode.title)}</strong><span>${escapeHtml(episode.series)} · T${episode.season} E${episode.episode_number}</span></li>`).join('')
+        : '<p class="member-profile-empty">Nenhum episódio adicionado ainda.</p>';
+      const favoriteList = favorites.length
+        ? favorites.map(item => `<button class="member-detail-tag" type="button" data-member-drama="${escapeHtml(item.key)}">${escapeHtml(item.title)}</button>`).join('')
+        : '<p class="member-profile-empty">Nenhum dorama favoritado ainda.</p>';
+      const genreList = genres.length
+        ? genres.map(item => `<span class="member-detail-tag">${escapeHtml(item.genre)} <small>${escapeHtml(item.series)}</small></span>`).join('')
+        : '<p class="member-profile-empty">Nenhum gênero escolhido ainda.</p>';
+      const online = Boolean(user.online);
+      $('#memberProfileContent').innerHTML = `<header class="member-profile-header"><div class="member-profile-avatar">${avatarHtml(user, 'profile-avatar-image')}<i class="member-presence-dot${online ? ' is-online' : ''}" aria-hidden="true"></i></div><div><span class="eyebrow">PERFIL DO MEMBRO</span><h2 id="memberProfileTitle">${escapeHtml(user.display_name)}${isSelf ? ' <small class="member-self-label">Você</small>' : ''}</h2><p>@${escapeHtml(user.username)} <span class="member-online-status${online ? ' is-online' : ''}"><i aria-hidden="true"></i>${online ? 'Online' : 'Offline'}</span></p><p>${escapeHtml(user.bio || 'Este perfil ainda não tem uma descrição.')}</p></div></header><div class="member-profile-stats"><div><strong>${addedEpisodes.length}</strong><span>adicionados</span></div><div><strong>${watchingEpisodes.length}</strong><span>assistindo</span></div><div><strong>${done}</strong><span>concluídos</span></div><div><strong>${commentCount}</strong><span>comentários</span></div><div><strong>${favorites.length}</strong><span>favoritos</span></div><div><strong>${sent.length + received.length}</strong><span>recomendações</span></div></div><section class="member-profile-details"><div><h3>Adicionados à biblioteca</h3><ul class="member-profile-added-list">${addedList}</ul></div><div><h3>Doramas favoritos</h3><div class="member-detail-tags">${favoriteList}</div><h3>Gêneros favoritos</h3><div class="member-detail-tags">${genreList}</div></div></section><section class="member-profile-comments"><div><span class="eyebrow">CONVERSA DO CLUBE</span><h3>Comentários que fez</h3></div><div class="profile-comments-list">${commentHistoryHtml(comments)}</div><p class="profile-comments-empty${comments.length ? ' hidden' : ''}">Este membro ainda não comentou em episódios ou doramas.</p></section><section class="member-profile-recommendations"><div><span class="eyebrow">INDICAÇÕES</span><h3>Doramas recomendados</h3></div><div class="member-recommendation-columns"><div><h4>Recomendou</h4>${renderMemberRecommendationList(sent, 'sent')}</div><div><h4>Recebeu</h4>${renderMemberRecommendationList(received, 'received')}</div></div>${isSelf ? '' : `<button class="button primary member-recommend-cta" type="button" data-recommend-user="${escapeHtml(userId)}">Recomendar para ${escapeHtml(user.display_name)}</button>`}</section>`;
+      showModal('memberProfileModal');
     }
     function renderRecommendations() {
       const incoming = state.recommendations.filter(item => item.to_user_id === state.me.id).sort((a, b) => b.created - a.created);
@@ -572,7 +976,7 @@
       }
       showModal('recommendModal');
     }
-    function safeVideo(url, autoplay = false) {
+    function safeVideo(url, autoplay = false, controls = true, segmentSeconds = 0) {
       try {
         const parsed = new URL(url);
         const youtubeHosts = ['youtube.com','www.youtube.com','m.youtube.com','music.youtube.com','youtu.be','youtube-nocookie.com','www.youtube-nocookie.com'];
@@ -594,14 +998,25 @@
               params.set('mute', '1');
               params.set('loop', '1');
               params.set('playlist', id);
-              params.set('controls', '1');
+              params.set('controls', controls ? '1' : '0');
+              if (!controls) {
+                params.set('disablekb', '1');
+                params.set('fs', '0');
+                params.set('modestbranding', '1');
+              }
             } else if (Number.isFinite(start) && start > 0) {
               params.set('start', String(start));
+            }
+            if (autoplay && segmentSeconds > 0) {
+              params.set('start', String(start));
+              params.set('end', String(start + segmentSeconds));
+              params.set('enablejsapi', '1');
+              params.set('origin', window.location.origin);
             }
             params.set('playsinline', '1');
             params.set('rel', '0');
             const query = params.toString();
-            return {type:'youtube', src:`https://www.youtube-nocookie.com/embed/${id}${query ? `?${query}` : ''}`, externalUrl:`https://www.youtube.com/watch?v=${id}${start > 0 ? `&t=${start}s` : ''}`};
+            return {type:'youtube', src:`https://www.youtube-nocookie.com/embed/${id}${query ? `?${query}` : ''}`, externalUrl:`https://www.youtube.com/watch?v=${id}${start > 0 ? `&t=${start}s` : ''}`, segmentStart:start};
           }
         }
         if (parsed.protocol === 'https:' && /\.(mp4|webm|ogg)$/i.test(parsed.pathname)) return {type:'direct', src:parsed.href, externalUrl:parsed.href};
@@ -622,7 +1037,8 @@
       $('#episodeTitle').textContent = episode.title; $('#episodeDescription').textContent = episode.description || 'Sem descrição para este episódio.';
       const mine = episode.progress[state.me.id] || {status:'new', note:''};
       $('#progressSelect').value = mine.status; $('#progressNote').value = mine.note || '';
-      $('#mentionSelect').innerHTML = state.users.filter(user => user.id !== state.me.id).map(user => `<option value="${escapeHtml(user.id)}">${escapeHtml(user.display_name)}</option>`).join('');
+      $('#commentForm').reset();
+      hideMentionSuggestions();
       renderEpisodeMembers(episode); renderComments(episode);
       $('#episodeModal').classList.remove('hidden'); document.body.classList.add('modal-open');
       try {
@@ -639,14 +1055,66 @@
         return `<div class="episode-member">${avatarHtml(user, 'mini-avatar')}<span>${escapeHtml(user.id === state.me.id ? 'Você' : user.display_name)}</span><div><strong class="status-${progress.status}">${statusText[progress.status] || statusText.new}</strong>${progress.note ? `<small>${escapeHtml(progress.note)}</small>` : ''}</div></div>`;
       }).join('');
     }
+    function commentMentionHtml(text, mentionIds) {
+      const mentionedUsers = state.users.filter(user => mentionIds.includes(user.id));
+      const renderedIds = new Set();
+      const body = String(text ?? '').split(/(@[\w.-]+)/gi).map(part => {
+        if (!part.startsWith('@')) return escapeHtml(part);
+        const username = part.slice(1).toLocaleLowerCase('pt-BR');
+        const user = mentionedUsers.find(item => item.username.toLocaleLowerCase('pt-BR') === username);
+        if (!user) return escapeHtml(part);
+        renderedIds.add(user.id);
+        return `<span class="comment-mention"><strong>${escapeHtml(user.display_name)}</strong><small>@${escapeHtml(user.username)}</small></span>`;
+      }).join('');
+      const legacyMentions = mentionedUsers.filter(user => !renderedIds.has(user.id)).map(user => `<span class="comment-mention"><strong>${escapeHtml(user.display_name)}</strong><small>@${escapeHtml(user.username)}</small></span>`).join(' ');
+      return `${body}${legacyMentions ? ` ${legacyMentions}` : ''}`;
+    }
     function renderComments(episode) {
       $('#commentCount').textContent = episode.comments.length;
       $('#commentList').innerHTML = [...episode.comments].reverse().map(comment => {
         const author = state.users.find(user => user.id === comment.user_id);
         if (!author) return '';
-        const tagged = (comment.mentions || []).map(id => state.users.find(user => user.id === id)).filter(Boolean).map(user => ` <span class="mention">@${escapeHtml(user.display_name)}</span>`).join('');
-        return `<article class="comment">${avatarHtml(author, 'comment-avatar')}<div><div class="comment-by"><strong>${escapeHtml(author.display_name)}</strong><span>${new Date(comment.created).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}</span></div><p>${escapeHtml(comment.text)}${tagged}</p></div></article>`;
+        return `<article class="comment">${avatarHtml(author, 'comment-avatar')}<div><div class="comment-by"><strong>${escapeHtml(author.display_name)}</strong><small class="comment-username">@${escapeHtml(author.username)}</small><span>${new Date(comment.created).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}</span></div><p>${commentMentionHtml(comment.text, comment.mentions || [])}</p></div></article>`;
       }).join('') || '<p class="no-comments">Seja a primeira pessoa a comentar.</p>';
+    }
+    function hideMentionSuggestions() {
+      const textarea = $('#commentText');
+      const suggestions = $('#mentionSuggestions');
+      if (!textarea || !suggestions) return;
+      suggestions.classList.add('hidden');
+      suggestions.replaceChildren();
+      textarea.setAttribute('aria-expanded', 'false');
+      state.activeMentionRange = null;
+    }
+    function updateMentionSuggestions(textarea) {
+      const suggestions = $('#mentionSuggestions');
+      const beforeCursor = textarea.value.slice(0, textarea.selectionStart);
+      const match = beforeCursor.match(/(^|\s)@([\w.-]*)$/u);
+      if (!match) return hideMentionSuggestions();
+      const query = match[2].toLocaleLowerCase('pt-BR');
+      const start = textarea.selectionStart - query.length - 1;
+      const candidates = state.users.filter(user => user.id !== state.me.id)
+        .filter(user => user.username.toLocaleLowerCase('pt-BR').startsWith(query)
+          || user.display_name.toLocaleLowerCase('pt-BR').includes(query))
+        .slice(0, 8);
+      state.activeMentionRange = {start, end:textarea.selectionStart};
+      suggestions.innerHTML = candidates.length
+        ? candidates.map(user => `<button class="mention-option" type="button" role="option" data-mention-user="${escapeHtml(user.id)}"><strong>${escapeHtml(user.display_name)}</strong><small>@${escapeHtml(user.username)}</small></button>`).join('')
+        : '<p class="mention-empty">Nenhum membro encontrado.</p>';
+      suggestions.classList.remove('hidden');
+      textarea.setAttribute('aria-expanded', 'true');
+    }
+    function insertMention(userId) {
+      const user = state.users.find(item => item.id === userId);
+      const textarea = $('#commentText');
+      const range = state.activeMentionRange;
+      if (!user || !textarea || !range) return hideMentionSuggestions();
+      const insertion = `@${user.username} `;
+      textarea.value = `${textarea.value.slice(0, range.start)}${insertion}${textarea.value.slice(range.end)}`;
+      const cursor = range.start + insertion.length;
+      textarea.focus();
+      textarea.setSelectionRange(cursor, cursor);
+      hideMentionSuggestions();
     }
     function showModal(id) { $(`#${id}`).classList.remove('hidden'); document.body.classList.add('modal-open'); }
     function hideModal(id) {
@@ -664,11 +1132,25 @@
         const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => reject(new Error('Não foi possível ler a imagem.')); reader.readAsDataURL(file);
       });
     }
-    $$('.auth-tab').forEach(tab => tab.addEventListener('click', () => authMode(tab.dataset.auth)));
+    const addContentButton = $('#addEpisodeButton');
+    addContentButton.textContent = '＋';
+    addContentButton.setAttribute('aria-label', 'Adicionar conteúdo');
+    addContentButton.title = 'Adicionar conteúdo';
+    $$('[data-chart-type]').forEach(button => button.addEventListener('click', () => {
+      const target = button.dataset.chartTarget;
+      state.chartModes[`#${target}`] = button.dataset.chartType;
+      $$(`[data-chart-target="${target}"]`).forEach(option => {
+        const active = option === button;
+        option.classList.toggle('active', active);
+        option.setAttribute('aria-pressed', String(active));
+      });
+      if (target === 'profileProgressChart') renderProfileStatistics();
+      else renderGroupStatistics();
+    }));
+    $('#heroFeaturedButton').addEventListener('click', () => { if (state.featuredSeriesKey) openDrama(state.featuredSeriesKey); });
     ['#authThemeToggle', '#appThemeToggle'].forEach(selector => $(selector).addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light', true)));
     $('#loginForm').addEventListener('submit', async event => { event.preventDefault(); try { const data = Object.fromEntries(new FormData(event.currentTarget)); await api('/api/login',{method:'POST',body:JSON.stringify(data)}); await refresh(); } catch(error) { toast(error.message); } });
-    $('#registerForm').addEventListener('submit', async event => { event.preventDefault(); try { const data = Object.fromEntries(new FormData(event.currentTarget)); await api('/api/register',{method:'POST',body:JSON.stringify(data)}); await refresh(); } catch(error) { toast(error.message); } });
-    $('#logoutButton').addEventListener('click', async () => { try { await api('/api/logout',{method:'POST',body:'{}'}); state.me = null; $('#app').classList.add('hidden'); $('#authScreen').classList.remove('hidden'); authMode('login'); } catch(error) { toast(error.message); } });
+    $('#logoutButton').addEventListener('click', async () => { try { await api('/api/logout',{method:'POST',body:'{}'}); state.me = null; $('#app').classList.add('hidden'); $('#authScreen').classList.remove('hidden'); } catch(error) { toast(error.message); } });
     ['#addEpisodeButton','#heroAddButton','#emptyAddButton'].forEach(selector => $(selector).addEventListener('click', () => openAddEpisode()));
     $('#episodeGrid').addEventListener('click', event => {
       const dramaCard = event.target.closest('[data-drama-key]');
@@ -698,7 +1180,27 @@
         openEpisode(recentEpisode.dataset.recentEpisode);
       }
     });
+    $('#profileCommentsList').addEventListener('click', event => {
+      const entry = event.target.closest('[data-comment-type]');
+      if (entry) openCommentTarget(entry.dataset.commentType, entry.dataset.commentTarget);
+    });
     $('#dramaModal').addEventListener('click', event => {
+      const editBlockButton = event.target.closest('[data-edit-block]');
+      if (editBlockButton) {
+        const episodes = state.episodes.filter(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === state.selectedSeriesKey);
+        if (episodes.length) openAddEpisode(episodes[0].series, episodes[0]);
+        return;
+      }
+      const deleteBlockButton = event.target.closest('[data-delete-block]');
+      if (deleteBlockButton) {
+        const selectedSeries = state.selectedSeriesKey ? state.episodes.find(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === state.selectedSeriesKey)?.series : '';
+        if (!selectedSeries) return;
+        if (!window.confirm(`Tem certeza que quer excluir todo o bloco de "${selectedSeries}"?`)) return;
+        api(`/api/series/${encodeURIComponent(selectedSeries)}`, {method:'DELETE'})
+          .then(async () => { hideModal('dramaModal'); await refresh(); toast('Bloco do dorama excluído.'); })
+          .catch(error => toast(error.message));
+        return;
+      }
       if (event.target.closest('[data-toggle-favorite]')) {
         const series = state.episodes.find(episode => episode.series.trim().toLocaleLowerCase('pt-BR') === state.selectedSeriesKey)?.series;
         if (series) {
@@ -748,8 +1250,36 @@
       if (favoriteCard) openDrama(favoriteCard.dataset.dramaKey);
     });
     $('#memberGrid').addEventListener('click', event => {
-      const button = event.target.closest('[data-recommend-user]');
-      if (button) openRecommendModal(button.dataset.recommendUser);
+      const recommendButton = event.target.closest('[data-recommend-user]');
+      if (recommendButton) {
+        openMemberProfile(recommendButton.dataset.recommendUser);
+        return;
+      }
+      const profileButton = event.target.closest('[data-view-member]');
+      if (profileButton) openMemberProfile(profileButton.dataset.viewMember);
+    });
+    $('#memberProfileContent').addEventListener('click', event => {
+      const commentEntry = event.target.closest('[data-comment-type]');
+      if (commentEntry) {
+        hideModal('memberProfileModal');
+        openCommentTarget(commentEntry.dataset.commentType, commentEntry.dataset.commentTarget);
+        return;
+      }
+      const recommendButton = event.target.closest('[data-recommend-user]');
+      if (recommendButton) {
+        const userId = recommendButton.dataset.recommendUser;
+        hideModal('memberProfileModal');
+        openRecommendModal(userId);
+        return;
+      }
+      const dramaButton = event.target.closest('[data-member-drama]');
+      if (!dramaButton) return;
+      const key = dramaButton.dataset.memberDrama;
+      const episode = state.episodes.find(item => item.series.trim().toLocaleLowerCase('pt-BR') === key);
+      if (episode) {
+        hideModal('memberProfileModal');
+        openDrama(key);
+      }
     });
     $('#notificationButton').addEventListener('click', () => {
       const popover = $('#notificationPopover');
@@ -820,6 +1350,17 @@
         toast(error.message);
       }
     });
+    $('#editEpisodeButton').addEventListener('click', () => {
+      if (!state.selectedEpisode) return;
+      openAddEpisode(state.selectedEpisode.series, state.selectedEpisode);
+    });
+    $('#deleteEpisodeButton').addEventListener('click', () => {
+      if (!state.selectedEpisode) return;
+      if (!window.confirm(`Tem certeza que quer excluir o episódio "${state.selectedEpisode.title}" do dorama "${state.selectedEpisode.series}"?`)) return;
+      api(`/api/episodes/${encodeURIComponent(state.selectedEpisode.id)}`, {method:'DELETE'})
+        .then(async () => { hideModal('episodeModal'); await refresh(); toast('Episódio excluído.'); })
+        .catch(error => toast(error.message));
+    });
     $('#profileButton').addEventListener('click', () => {
       const popover = $('#profilePopover');
       const willOpen = popover.classList.contains('hidden');
@@ -854,9 +1395,32 @@
     $('#episodeForm').addEventListener('submit', async event => {
       event.preventDefault(); const formElement = event.currentTarget; const form = new FormData(formElement);
       try {
-        const cover = await fileData(form.get('cover'));
-        await api('/api/episodes',{method:'POST',body:JSON.stringify({series:form.get('series'),season:Number(form.get('season')),episode_number:Number(form.get('episode')),title:form.get('title'),video_url:form.get('video_url'),description:form.get('description'),cover})});
-        formElement.reset(); hideModal('addModal'); await refresh(); toast('Episódio adicionado à biblioteca.');
+        const isEdit = formElement.dataset.mode === 'edit';
+        const existingEpisode = isEdit ? state.episodes.find(episode => episode.id === formElement.dataset.episodeId) : null;
+        const selectedCover = form.get('cover');
+        const cover = selectedCover && selectedCover.name ? await fileData(selectedCover) : (existingEpisode?.cover || '');
+        const payload = {
+          series: form.get('series'),
+          display_label: form.get('display_label'),
+          season: Number(form.get('season')),
+          episode_number: Number(form.get('episode')),
+          title: form.get('title'),
+          video_url: form.get('video_url'),
+          description: form.get('description'),
+          cover,
+        };
+        if (isEdit && formElement.dataset.episodeId) {
+          await api(`/api/episodes/${encodeURIComponent(formElement.dataset.episodeId)}`, {method:'PUT', body: JSON.stringify(payload)});
+          hideModal('addModal');
+          await refresh();
+          toast('Episódio atualizado com sucesso.');
+        } else {
+          await api('/api/episodes', {method:'POST', body: JSON.stringify(payload)});
+          formElement.reset();
+          hideModal('addModal');
+          await refresh();
+          toast('Episódio adicionado à biblioteca.');
+        }
       } catch(error) { toast(error.message); }
     });
     $('#saveProgress').addEventListener('click', async () => {
@@ -865,16 +1429,38 @@
     });
     $('#commentForm').addEventListener('submit', async event => {
       event.preventDefault(); const form = event.currentTarget;
+      const text = form.elements.text.value;
+      const usernames = new Set([...text.matchAll(/@([\w.-]+)/gu)].map(([, username]) => username.toLocaleLowerCase('pt-BR')));
+      const mentions = state.users.filter(user => user.id !== state.me.id && usernames.has(user.username.toLocaleLowerCase('pt-BR'))).map(user => user.id);
       try {
-        const result = await api(`/api/episodes/${encodeURIComponent(state.selectedEpisode.id)}/comments`,{method:'POST',body:JSON.stringify({text:form.elements.text.value,mentions:[...$('#mentionSelect').selectedOptions].map(option => option.value)})});
-        state.selectedEpisode.comments = result.comments; form.reset(); renderComments(state.selectedEpisode); toast('Comentário publicado.');
+        const result = await api(`/api/episodes/${encodeURIComponent(state.selectedEpisode.id)}/comments`,{method:'POST',body:JSON.stringify({text,mentions})});
+        state.selectedEpisode.comments = result.comments; form.reset(); hideMentionSuggestions(); renderComments(state.selectedEpisode); toast('Comentário publicado.');
       } catch(error) { toast(error.message); }
+    });
+    $('#commentText').addEventListener('input', event => updateMentionSuggestions(event.currentTarget));
+    $('#commentText').addEventListener('click', event => updateMentionSuggestions(event.currentTarget));
+    $('#commentText').addEventListener('keyup', event => {
+      if (['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) updateMentionSuggestions(event.currentTarget);
+    });
+    $('#commentText').addEventListener('keydown', event => {
+      if (event.key === 'Escape') hideMentionSuggestions();
+      else if (event.key === 'ArrowDown' && !$('#mentionSuggestions').classList.contains('hidden')) {
+        event.preventDefault();
+        $('.mention-option', $('#mentionSuggestions'))?.focus();
+      }
+    });
+    $('#mentionSuggestions').addEventListener('mousedown', event => {
+      if (event.target.closest('[data-mention-user]')) event.preventDefault();
+    });
+    $('#mentionSuggestions').addEventListener('click', event => {
+      const option = event.target.closest('[data-mention-user]');
+      if (option) insertMention(option.dataset.mentionUser);
     });
     $('#profileForm').addEventListener('submit', async event => {
       event.preventDefault(); const form = new FormData(event.currentTarget);
       try {
         const avatar = await fileData(form.get('avatar'));
-        const updated = await api('/api/profile',{method:'POST',body:JSON.stringify({display_name:form.get('display_name'),bio:form.get('bio'),avatar,current_password:form.get('current_password'),new_password:form.get('new_password')})});
+        const updated = await api('/api/profile',{method:'POST',body:JSON.stringify({username:form.get('username'),display_name:form.get('display_name'),bio:form.get('bio'),avatar,current_password:form.get('current_password'),new_password:form.get('new_password')})});
         state.me = updated.me; state.users = state.users.map(user => user.id === state.me.id ? state.me : user); $('#topName').textContent = state.me.display_name; $('#topAvatar').outerHTML = avatarHtml(state.me,'avatar').replace('class="avatar"','id="topAvatar" class="avatar"'); renderProfilePopover(); hideModal('profileModal'); render(); toast('Perfil atualizado.');
       } catch(error) { toast(error.message); }
     });
@@ -890,6 +1476,18 @@
       const nextPosition = carousel.scrollLeft + card.getBoundingClientRect().width + gap;
       carousel.scrollTo({left:nextPosition >= carousel.scrollWidth - carousel.clientWidth - 4 ? 0 : nextPosition,behavior:'smooth'});
     }, 5000);
+    state.heroTimer = setInterval(() => {
+      if (!state.me || document.hidden || !state.featuredDramaCount) return;
+      state.featuredRotationIndex = (state.featuredRotationIndex + 1) % state.featuredDramaCount;
+      state.featuredClipIndex += 1;
+      state.featuredCommentIndex = 0;
+      renderFeaturedDrama();
+    }, 45000);
+    state.heroCommentTimer = setInterval(() => {
+      if (!state.me || document.hidden || state.featuredComments.length < 2) return;
+      state.featuredCommentIndex = (state.featuredCommentIndex + 1) % state.featuredComments.length;
+      renderFeaturedComment();
+    }, 6500);
     setInterval(() => { if (state.me) refresh().catch(error => toast(error.message)); }, 15000);
     applyTheme(document.documentElement.dataset.theme);
     api('/api/me').then(result => result.me ? refresh() : null).catch(error => toast(error.message || 'Não foi possível conectar ao servidor.')).then(() => { if (!state.me) $('#authScreen').classList.remove('hidden'); });
